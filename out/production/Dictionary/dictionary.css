@@ -1,0 +1,35 @@
+.menu-grad{
+    -fx-background-color: linear-gradient(to bottom left,#371897,#2D75E8);
+    -fx-opacity: 0.9;
+}
+.menu-button{
+    fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+    -fx-alignment: center-left;
+    -fx-text-fill: #fff;
+}
+.menu-button:hover {
+    -fx-opacity: 0.1;
+}
+.temp{
+    -fx-background-color: black;
+}
+
+.search-field{
+    -fx-border-radius: 30 30 30 30;
+    -fx-background-radius: 30 30 30 30;
+}
+.search-button{
+    -fx-border-radius: 30 30 30 30;
+    -fx-background-radius: 30 30 30 30;
+    -fx-background-color: #fcbf49;
+    -fx-background-image: url('search-solid.png');
+}
+.language-button{
+    -fx-border-radius: 30 30 30 30;
+    -fx-background-radius: 30 30 30 30;
+    -fx-background-color: #00b4d8;
+    -fx-opacity: 0.7;
+}

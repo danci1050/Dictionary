@@ -7,8 +7,6 @@ import java.util.*;
 
 public class Translator {
     private HashMap<String, Dictionary> dictionaries;
-    // Regex pattern matches any Unicode punctuation or symbol
-    private final String punctuation = "([\\p{P}\\p{S}])";
 
     public Translator() {
         dictionaries = new HashMap<>();
@@ -21,12 +19,38 @@ public class Translator {
         }
     }
 
+    public void addEntry(String fromLanguage, String toLanguage, String word, String translation) {
+        Entry entry = findEntry(fromLanguage, toLanguage, word);
+        if (entry == null) {
+            // TODO instantiate Entry and add it to proper dictionary
+        } else {
+            entry.getTranslation().add(translation);
+        }
+    }
+
+    public void removeEntry(String fromLanguage, String toLanguage, String word, String translation) throws NoSuchElementException {
+        Entry entry = findEntry(fromLanguage, toLanguage, word);
+        if (entry == null) {
+            throw new NoSuchElementException("The word does not exist in the dictionary");
+        }
+        if (!entry.getTranslation().contains(translation)) {
+            throw new NoSuchElementException("The meaning for this word is not in the dictionary");
+        }
+        else {
+            entry.getTranslation().remove(translation);
+        }
+    }
+
+
+    //TODO search for entry(word/phrase) in a correct dictionary
+    public Entry findEntry(String fromLanguage, String toLanguage, String word) {
+        return new Entry(word, "baguette");
+    }
+
     private Pair<String, Set<String>> processPhrase(String[] inputTextArray, int i, Entry wordEntry) {
-        //TODO temporary faking entries
-        wordEntry = new Entry();
         Pair<String, Set<String>> result = null;
 
-        Entry nextEntry = wordEntry.getPhrase().get(inputTextArray[i+1]);
+        Entry nextEntry = wordEntry.getPhrase() == null ? null : wordEntry.getPhrase().get(inputTextArray[i+1]);
         if (nextEntry != null) {
             result = processPhrase(inputTextArray, i + 1, nextEntry);
         }
@@ -39,6 +63,8 @@ public class Translator {
     }
 
     public List<Pair<String, Set<String>>> translate(String fromLanguage, String toLanguage, String inputText) {
+        // Regex pattern matches any Unicode punctuation or symbol
+        String punctuation = "([\\p{P}\\p{S}])";
 
         inputText = inputText.replaceAll(punctuation, " $1 ");
         // Regex pattern matches any whitespace character(s)
@@ -50,8 +76,7 @@ public class Translator {
 
             if (!word.matches(punctuation)) {
                 System.out.println(word);
-                //TODO search for entry in a correct dictionary
-                Entry wordEntry = null;
+                Entry wordEntry = findEntry(fromLanguage, toLanguage, word);
                 if (wordEntry != null) {
                     translation.add(processPhrase(inputTextArray, i, wordEntry));
                 } else {

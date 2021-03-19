@@ -38,12 +38,33 @@ public class Translator {
         }
         else {
             entry.getTranslation().remove(translation);
+            cleanupEntry(fromLanguage, toLanguage, word);
+        }
+    }
+
+    private void cleanupEntry(String fromLanguage, String toLanguage, String word) {
+        String[] words = word.split("\\s");
+        Entry entry = findEntry(fromLanguage, toLanguage, word);
+        if (entry.getTranslation().size() == 0 && entry.getPhrase().size() == 0) {
+            if (words.length >= 2) {
+                findEntry(fromLanguage, toLanguage, String.join(" ", Arrays.copyOfRange(words, 0, words.length - 2)))
+                        .getPhrase().remove(words[words.length - 1]);
+            } else {
+                //TODO remove entry from dictionary
+            }
         }
     }
 
 
     //TODO search for entry(word/phrase) in a correct dictionary
     public Entry findEntry(String fromLanguage, String toLanguage, String word) {
+        //TODO this is just a little test, should be replaced by proper tests when dictionary is implemented
+        if (word.equals("English")) {
+            Entry entry = new Entry(word, "English");
+            entry.getPhrase().put("to", new Entry("to"));
+            entry.getPhrase().get("to").getPhrase().put("Dutch", new Entry("Dutch", "this is a phrase"));
+            return entry;
+        }
         return new Entry(word, "baguette");
     }
 
@@ -71,7 +92,7 @@ public class Translator {
         String[] inputTextArray = inputText.split("[\\s]+");
 
         List<Pair<String, Set<String>>> translation = new LinkedList<>();
-        for (int i = 0; i < inputTextArray.length; i++) {
+        for (int i = 0; i < inputTextArray.length;) {
             String word = inputTextArray[i];
 
             if (!word.matches(punctuation)) {
@@ -85,6 +106,9 @@ public class Translator {
             } else {
                 translation.add(new Pair<>(word, new HashSet<>(Collections.singletonList(word))));
             }
+
+            // Move by the number of processed words
+            i += translation.get(translation.size() - 1).getKey().split(" ").length;
         }
 
         return translation;

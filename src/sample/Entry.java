@@ -2,13 +2,14 @@ package sample;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Entry {
 
 	private final String word;
 	private final Set<String> translation = new HashSet<>();
-	private final HashMap<String, Entry> phrase = new HashMap<>();
+	private final Map<String, Entry> phrase = new HashMap<String, Entry>();
 
 	public Entry(String word) {
 		this.word = word;
@@ -27,7 +28,7 @@ public class Entry {
 		return translation;
 	}
 
-	public HashMap<String, Entry> getPhrase() {
+	public Map<String, Entry> getPhrase() {
 		return phrase;
 	}
 }

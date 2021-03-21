@@ -28,6 +28,10 @@ public class Entry {
 		return translation;
 	}
 
+	public void addTranslation(String translation) {
+		this.translation.add(translation);
+	}
+
 	public Map<String, Entry> getPhrase() {
 		return phrase;
 	}

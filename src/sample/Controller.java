@@ -2,11 +2,10 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
-
-import java.io.IOException;
-import java.util.Locale;
 
 public class Controller {
 
@@ -69,17 +68,23 @@ public class Controller {
 		settingsTab.setVisible(true);
 	}
 
+	// TODO: must be removed after the translator class is merged in
+	Dictionary dict = new Dictionary();
+
 	@FXML
 	public void search(ActionEvent search) {
-		if (dutchEnglish.isSelected()) {
-			searchedWord
-					.setText(searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
-			result.setText(Dictionary.search(Dictionary.getDutchEnglish(), searchField.getText().toLowerCase()));
-		} else {
-			searchedWord
-					.setText(searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
-			result.setText(Dictionary.search(Dictionary.getEnglishDutch(), searchField.getText().toLowerCase()));
-
+		try {
+			if (dutchEnglish.isSelected()) {
+				searchedWord.setText(
+						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
+				result.setText(dict.search(searchField.getText().toLowerCase(), true).getTranslation().toString());
+			} else {
+				searchedWord.setText(
+						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
+				result.setText(dict.search(searchField.getText().toLowerCase(), false).getTranslation().toString());
+			}
+		} catch (NoTranslationException e) {
+			result.setText(e.getMessage());
 		}
 	}
 

@@ -1,75 +1,159 @@
 package sample;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Dictionary {
-	private static Map<String, Entry> dutchEnglish;
-	private static Map<String, Entry> englishDutch;
+	// TODO: make the class language-independent to support non-named language pairs
+	private Map<String, Entry> dictToEnglish;
+	private Map<String, Entry> dictFromEnglish;
 
 	public Dictionary() {
-		dutchEnglish = new HashMap<String, Entry>();
-		englishDutch = new HashMap<String, Entry>();
+		// TODO: a dictionary must be loaded by the Translator class
+		dictToEnglish = new HashMap<String, Entry>();
+		dictFromEnglish = new HashMap<String, Entry>();
+
+		// TODO: call these functions from Translator
+		/*
+		 * try { loadDict("dictionaries/dutchEnglish.ser", true);
+		 * loadDict("dictionaries/englishDutch.ser", true); } catch
+		 * (ClassNotFoundException | IOException e) { e.printStackTrace(); }
+		 */
+		try {
+			generateDictionaryFromCSVFile("test/wordsample.csv", true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	/*
-	 * Some of these functions are maybe redundant
+
+	public Map<String, Entry> getDictToEnglish() {
+		return dictToEnglish;
+	}
+
+	public void setDictToEnglish(Map<String, Entry> dictToEnglish) {
+		this.dictToEnglish = dictToEnglish;
+	}
+
+	public Map<String, Entry> getDictFromEnglish() {
+		return dictFromEnglish;
+	}
+
+	public void setDictFromEnglish(Map<String, Entry> dictFromEnglish) {
+		this.dictFromEnglish = dictFromEnglish;
+	}
+
+	/**
+	 * Loads a serialized dictionary from disk
+	 * 
+	 * @param path      path to the dictionary
+	 * @param toEnglish the dictionary is to English language
+	 * @throws IOException            failed to read the file
+	 * @throws ClassNotFoundException
 	 */
-
-	public static Map<String, Entry> getDutchEnglish() {
-		return dutchEnglish;
-	}
-
-	public static void setDutchEnglish(Map<String, Entry> dutchEnglish) {
-		Dictionary.dutchEnglish = dutchEnglish;
-	}
-
-	public static Map<String, Entry> getEnglishDutch() {
-		return englishDutch;
-	}
-
-	public static void setEnglishDutch(Map<String, Entry> englishDutch) {
-		Dictionary.englishDutch = englishDutch;
-	}
-
 	// TODO: verify that the loaded dictionary is valid by checking types of values
 	// of the map
-	public static void loadDutchEnglish() throws IOException, ClassNotFoundException {
-
-		FileInputStream fis = new FileInputStream("dictionaries/dutchEnglish.ser");
+	public void loadDict(String path, boolean toEnglish) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(path);
 		ObjectInputStream ois = new ObjectInputStream(fis);
-		dutchEnglish = (Map<String, Entry>) ois.readObject();
+		if (toEnglish) {
+			dictToEnglish = (Map<String, Entry>) ois.readObject();
+		} else {
+			dictFromEnglish = (Map<String, Entry>) ois.readObject();
+		}
 		ois.close();
+
 	}
 
-	// TODO: verify that the loaded dictionary is valid by checking types of values
-	// of the map
-	public static void loadEnglishDutch() throws IOException, ClassNotFoundException {
+	/**
+	 * Searches a word is the dictionary and returns the dictionary entry
+	 * 
+	 * @param searchWord word to search
+	 * @param toEnglish  whether the translation is being done to English
+	 * @return corresponding entry in the dictionary
+	 */
+	// TODO: rename(?) getTranslation would be more descriptive.
+	public Entry search(String searchWord, Boolean toEnglish) throws NoTranslationException {
 
-		FileInputStream fis = new FileInputStream("dictionaries/englishDutch.ser");
-		ObjectInputStream ois = new ObjectInputStream(fis);
-		englishDutch = (Map<String, Entry>) ois.readObject();
-		ois.close();
+		Entry entry = (toEnglish ? dictToEnglish : dictFromEnglish).get(searchWord);
+		if (entry == null) {
+			throw new NoTranslationException();
+		} else {
+			return entry;
+		}
 	}
 
-	// TODO: use local dictionary. GUI logic must be updated to match
-	public static String search(Map<String, Entry> temp, String searchWord) {
-		// TODO: update pre-generated dictionaries to match the hashmap types
-//		return (String) temp.get(searchWord).getWord();
-		return "Not implemented.";
+	/**
+	 * Add an entry to the dictionary
+	 * 
+	 * @param original
+	 * @param translations
+	 */
+	public void add(String original, String[] translations, boolean toEnglish) {
+		original = original.strip();
+
+		Entry newEntry = new Entry(original);
+		// add all possible translations of the word
+		// TODO: handle phrases correctly
+		for (String translation : translations) {
+			newEntry.addTranslation(translation.strip());
+		}
+
+		(toEnglish ? dictToEnglish : dictFromEnglish).put(original, newEntry);
 	}
 
-	// TODO: use local dictionary. GUI logic must be updated to match
-	public static void add(String english, String dutch) {
+	/**
+	 * Removes an entry from the dictionary
+	 * 
+	 * @param word      word to remove
+	 * @param toEnglish use toEnglish dictionary
+	 */
+	public void remove(String word, boolean toEnglish) {
+		(toEnglish ? dictToEnglish : dictFromEnglish).remove(word);
+	}
+
+	/**
+	 * Generate a Map with words as keys and Entry as values
+	 * 
+	 * @param path path to the CSV file
+	 * @throws FileNotFoundException CSV file not found or is not a file
+	 * @throws IOException           general error
+	 */
+	public void generateDictionaryFromCSVFile(String path, boolean toEnglish)
+			throws FileNotFoundException, IOException {
+		// Delimiter used for CSV parsing
+		final String delimiter = ",";
+
+		FileReader fr = new FileReader(path);
+		BufferedReader br = new BufferedReader(fr);
+
+		// TODO: verify that the CSV file is valid. Should check that each word has at
+		// least one translation
+		String line;
+		while ((line = br.readLine()) != null) {
+			System.out.println(line);
+			line = line.toLowerCase();
+			// Split the input line in 2 parts
+			String[] splitLine = line.split(delimiter, 2);
+			add(splitLine[0], splitLine[1].split(delimiter), toEnglish);
+		}
+
+		fr.close();
+	}
+
+	/**
+	 * Serializes and writes a dictionary to a file
+	 * 
+	 * @param path      path to the file to write to
+	 * @param toEnglish write the toEnglsh dictionary
+	 */
+	public void writeDictionary(String path, boolean toEnglish) {
+		// TODO: implement
 		return;
-
-//		dutchEnglish.put(dutch, english);
-//		englishDutch.put(english, dutch);
-	}
-
-	public static void remove(Map<String, Entry> temp, String word) {
-		temp.remove(word);
 	}
 }

@@ -2,9 +2,16 @@
 /shelf/
 /workspace.xml
 # Datasource local storage ignored files
-/../../../../../../:\Users\danci\Downloads\Dictionary\.idea/dataSources/
+.idea/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-/.idea/
 /out/
+/bin/
+
+# Eclipse-specific files
+build/
+build.fxbuild
+.classpath
+.project
+.settings/

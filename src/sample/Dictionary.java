@@ -33,17 +33,16 @@ public class Dictionary {
         Dictionary.englishDutch = englishDutch;
     }
 
-    // TODO: 11/03/2021 Solve relative pathing
     public static void loadDutchEnglish() throws IOException, ClassNotFoundException {
 
-        FileInputStream fis = new FileInputStream("C:\\Users\\danci\\IdeaProjects\\Dictionary\\src\\sample\\dutchEnglish.ser");
+        FileInputStream fis = new FileInputStream("dictionaries/dutchEnglish.ser");
         ObjectInputStream ois = new ObjectInputStream(fis);
         dutchEnglish= (HashMap)ois.readObject();
     }
 
     public static void loadEnglishDutch() throws IOException, ClassNotFoundException {
 
-        FileInputStream fis = new FileInputStream("C:\\Users\\danci\\IdeaProjects\\Dictionary\\src\\sample\\englishDutch.ser");
+        FileInputStream fis = new FileInputStream("dictionaries/englishDutch.ser");
         ObjectInputStream ois = new ObjectInputStream(fis);
         englishDutch= (HashMap)ois.readObject();
     }

@@ -26,65 +26,11 @@ public class Dictionary {
 		 * (ClassNotFoundException | IOException e) { e.printStackTrace(); }
 		 */
 		try {
+			// TODO: load actual dictionaries, not the test file.
+			// TODO: implement inverse dictionary construction
 			generateDictionaryFromCSVFile("test/wordsample.csv", true);
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public Map<String, Entry> getDictToEnglish() {
-		return dictToEnglish;
-	}
-
-	public void setDictToEnglish(Map<String, Entry> dictToEnglish) {
-		this.dictToEnglish = dictToEnglish;
-	}
-
-	public Map<String, Entry> getDictFromEnglish() {
-		return dictFromEnglish;
-	}
-
-	public void setDictFromEnglish(Map<String, Entry> dictFromEnglish) {
-		this.dictFromEnglish = dictFromEnglish;
-	}
-
-	/**
-	 * Loads a serialized dictionary from disk
-	 * 
-	 * @param path      path to the dictionary
-	 * @param toEnglish the dictionary is to English language
-	 * @throws IOException            failed to read the file
-	 * @throws ClassNotFoundException
-	 */
-	// TODO: verify that the loaded dictionary is valid by checking types of values
-	// of the map
-	public void loadDict(String path, boolean toEnglish) throws IOException, ClassNotFoundException {
-		FileInputStream fis = new FileInputStream(path);
-		ObjectInputStream ois = new ObjectInputStream(fis);
-		if (toEnglish) {
-			dictToEnglish = (Map<String, Entry>) ois.readObject();
-		} else {
-			dictFromEnglish = (Map<String, Entry>) ois.readObject();
-		}
-		ois.close();
-
-	}
-
-	/**
-	 * Searches a word is the dictionary and returns the dictionary entry
-	 * 
-	 * @param searchWord word to search
-	 * @param toEnglish  whether the translation is being done to English
-	 * @return corresponding entry in the dictionary
-	 */
-	// TODO: rename(?) getTranslation would be more descriptive.
-	public Entry search(String searchWord, Boolean toEnglish) throws NoTranslationException {
-
-		Entry entry = (toEnglish ? dictToEnglish : dictFromEnglish).get(searchWord);
-		if (entry == null) {
-			throw new NoTranslationException();
-		} else {
-			return entry;
 		}
 	}
 
@@ -105,16 +51,6 @@ public class Dictionary {
 		}
 
 		(toEnglish ? dictToEnglish : dictFromEnglish).put(original, newEntry);
-	}
-
-	/**
-	 * Removes an entry from the dictionary
-	 * 
-	 * @param word      word to remove
-	 * @param toEnglish use toEnglish dictionary
-	 */
-	public void remove(String word, boolean toEnglish) {
-		(toEnglish ? dictToEnglish : dictFromEnglish).remove(word);
 	}
 
 	/**
@@ -144,6 +80,72 @@ public class Dictionary {
 		}
 
 		fr.close();
+	}
+
+	public Map<String, Entry> getDictFromEnglish() {
+		return dictFromEnglish;
+	}
+
+	public Map<String, Entry> getDictToEnglish() {
+		return dictToEnglish;
+	}
+
+	/**
+	 * Loads a serialized dictionary from disk
+	 * 
+	 * @param path      path to the dictionary
+	 * @param toEnglish the dictionary is to English language
+	 * @throws IOException            failed to read the file
+	 * @throws ClassNotFoundException
+	 */
+	// TODO: verify that the loaded dictionary is valid by checking types of values
+	// of the map
+	public void loadDict(String path, boolean toEnglish) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(path);
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		if (toEnglish) {
+			dictToEnglish = (Map<String, Entry>) ois.readObject();
+		} else {
+			dictFromEnglish = (Map<String, Entry>) ois.readObject();
+		}
+		ois.close();
+
+	}
+
+	/**
+	 * Removes an entry from the dictionary
+	 * 
+	 * @param word      word to remove
+	 * @param toEnglish use toEnglish dictionary
+	 */
+	public void remove(String word, boolean toEnglish) {
+		(toEnglish ? dictToEnglish : dictFromEnglish).remove(word);
+	}
+
+	/**
+	 * Searches a word is the dictionary and returns the dictionary entry
+	 * 
+	 * @param searchWord word to search
+	 * @param toEnglish  whether the translation is being done to English
+	 * @return corresponding entry in the dictionary
+	 */
+	// TODO: rename(?) getTranslation would be more descriptive.
+	public Entry search(String searchWord, Boolean toEnglish) throws NoTranslationException {
+
+		Entry entry = (toEnglish ? dictToEnglish : dictFromEnglish).get(searchWord);
+		if (entry == null) {
+			throw new NoTranslationException();
+		} else {
+			return entry;
+		}
+	}
+
+	public void setDictFromEnglish(Map<String, Entry> dictFromEnglish) {
+		this.dictFromEnglish = dictFromEnglish;
+	}
+
+	public void setDictToEnglish(Map<String, Entry> dictToEnglish) {
+		this.dictToEnglish = dictToEnglish;
 	}
 
 	/**

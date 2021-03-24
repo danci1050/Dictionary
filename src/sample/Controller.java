@@ -77,11 +77,11 @@ public class Controller {
 			if (dutchEnglish.isSelected()) {
 				searchedWord.setText(
 						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
-				result.setText(dict.search(searchField.getText().toLowerCase(), true).getTranslation().toString());
+				result.setText(dict.search(searchField.getText().toLowerCase()).getTranslation().toString());
 			} else {
 				searchedWord.setText(
 						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
-				result.setText(dict.search(searchField.getText().toLowerCase(), false).getTranslation().toString());
+				result.setText(dict.search(searchField.getText().toLowerCase()).getTranslation().toString());
 			}
 		} catch (NoTranslationException e) {
 			result.setText(e.getMessage());

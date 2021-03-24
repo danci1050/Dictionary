@@ -10,14 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Dictionary {
-	// TODO: make the class language-independent to support non-named language pairs
-	private Map<String, Entry> dictToEnglish;
-	private Map<String, Entry> dictFromEnglish;
+	private Map<String, Entry> dict;
+	// TODO: add a dictionary name field/other metadata(?)
 
 	public Dictionary() {
 		// TODO: a dictionary must be loaded by the Translator class
-		dictToEnglish = new HashMap<String, Entry>();
-		dictFromEnglish = new HashMap<String, Entry>();
+		dict = new HashMap<String, Entry>();
 
 		// TODO: call these functions from Translator
 		/*
@@ -27,8 +25,7 @@ public class Dictionary {
 		 */
 		try {
 			// TODO: load actual dictionaries, not the test file.
-			// TODO: implement inverse dictionary construction
-			generateDictionaryFromCSVFile("test/wordsample.csv", true);
+			generateDictionaryFromCSVFile("test/wordsample.csv");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -40,7 +37,7 @@ public class Dictionary {
 	 * @param original
 	 * @param translations
 	 */
-	public void add(String original, String[] translations, boolean toEnglish) {
+	public void add(String original, String[] translations) {
 		original = original.strip();
 
 		Entry newEntry = new Entry(original);
@@ -50,7 +47,7 @@ public class Dictionary {
 			newEntry.addTranslation(translation.strip());
 		}
 
-		(toEnglish ? dictToEnglish : dictFromEnglish).put(original, newEntry);
+		dict.put(original, newEntry);
 	}
 
 	/**
@@ -60,8 +57,7 @@ public class Dictionary {
 	 * @throws FileNotFoundException CSV file not found or is not a file
 	 * @throws IOException           general error
 	 */
-	public void generateDictionaryFromCSVFile(String path, boolean toEnglish)
-			throws FileNotFoundException, IOException {
+	public void generateDictionaryFromCSVFile(String path) throws FileNotFoundException, IOException {
 		// Delimiter used for CSV parsing
 		final String delimiter = ",";
 
@@ -76,38 +72,29 @@ public class Dictionary {
 			line = line.toLowerCase();
 			// Split the input line in 2 parts
 			String[] splitLine = line.split(delimiter, 2);
-			add(splitLine[0], splitLine[1].split(delimiter), toEnglish);
+			add(splitLine[0], splitLine[1].split(delimiter));
 		}
 
 		fr.close();
 	}
 
-	public Map<String, Entry> getDictFromEnglish() {
-		return dictFromEnglish;
-	}
-
-	public Map<String, Entry> getDictToEnglish() {
-		return dictToEnglish;
+	public Map<String, Entry> getDict() {
+		return dict;
 	}
 
 	/**
 	 * Loads a serialized dictionary from disk
 	 * 
-	 * @param path      path to the dictionary
-	 * @param toEnglish the dictionary is to English language
+	 * @param path path to the dictionary
 	 * @throws IOException            failed to read the file
 	 * @throws ClassNotFoundException
 	 */
 	// TODO: verify that the loaded dictionary is valid by checking types of values
-	// of the map
-	public void loadDict(String path, boolean toEnglish) throws IOException, ClassNotFoundException {
+	// of the map. Also do other safety checks/validation here.
+	public void loadDict(String path) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(path);
 		ObjectInputStream ois = new ObjectInputStream(fis);
-		if (toEnglish) {
-			dictToEnglish = (Map<String, Entry>) ois.readObject();
-		} else {
-			dictFromEnglish = (Map<String, Entry>) ois.readObject();
-		}
+		dict = (Map<String, Entry>) ois.readObject();
 		ois.close();
 
 	}
@@ -115,24 +102,22 @@ public class Dictionary {
 	/**
 	 * Removes an entry from the dictionary
 	 * 
-	 * @param word      word to remove
-	 * @param toEnglish use toEnglish dictionary
+	 * @param word word to remove
 	 */
-	public void remove(String word, boolean toEnglish) {
-		(toEnglish ? dictToEnglish : dictFromEnglish).remove(word);
+	public void remove(String word) {
+		dict.remove(word);
 	}
 
 	/**
 	 * Searches a word is the dictionary and returns the dictionary entry
 	 * 
 	 * @param searchWord word to search
-	 * @param toEnglish  whether the translation is being done to English
 	 * @return corresponding entry in the dictionary
 	 */
 	// TODO: rename(?) getTranslation would be more descriptive.
-	public Entry search(String searchWord, Boolean toEnglish) throws NoTranslationException {
+	public Entry search(String searchWord) throws NoTranslationException {
 
-		Entry entry = (toEnglish ? dictToEnglish : dictFromEnglish).get(searchWord);
+		Entry entry = dict.get(searchWord);
 		if (entry == null) {
 			throw new NoTranslationException();
 		} else {
@@ -140,21 +125,16 @@ public class Dictionary {
 		}
 	}
 
-	public void setDictFromEnglish(Map<String, Entry> dictFromEnglish) {
-		this.dictFromEnglish = dictFromEnglish;
-	}
-
-	public void setDictToEnglish(Map<String, Entry> dictToEnglish) {
-		this.dictToEnglish = dictToEnglish;
+	public void setDict(Map<String, Entry> dict) {
+		this.dict = dict;
 	}
 
 	/**
 	 * Serializes and writes a dictionary to a file
 	 * 
-	 * @param path      path to the file to write to
-	 * @param toEnglish write the toEnglsh dictionary
+	 * @param path path to the file to write to
 	 */
-	public void writeDictionary(String path, boolean toEnglish) {
+	public void writeDictionary(String path) {
 		// TODO: implement
 		return;
 	}

@@ -2,6 +2,10 @@ package sample;
 
 import javafx.util.Pair;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
@@ -20,12 +24,59 @@ public class Test {
     }
 
     private void process() {
+        testDictionary();
         testTranslator();
     }
 
+
+    private void testDictionary() {
+        Dictionary dictionary = new Dictionary();
+        dictionary.add("this is testing phrase", new String[] {"it works", "how unexpected"});
+        System.out.println(dictionary.getDict());
+        dictionary.add("this is nice dog", new String[] {"holy", "moly"});
+        System.out.println(dictionary.getDict());
+        try {
+            dictionary.remove("this is testing phrase", new String[] {"it works"});
+        } catch (NoTranslationException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println(dictionary.getDict());
+    }
+
     private void testTranslator() {
-        Translator translator = new Translator();
-        List<Pair<String, Set<String>>> translation = translator.translate("english", "dutch", "The aim of this project is to create a program that functions as a translator from English to Dutch and Dutch to English. This program will translate words by taking an input (a line of text in English or Dutch) and output the translation for it.  It will also be possible to search for a word by outputting its translation, remove a word if it already exists in the dictionary and add it if it does not.  The user will also be able to process phrases that include more than one word and to upload a file containing a sizeable text and receive the output, a valid translation, as efficiently as possible. The program will have a Menu for the user the select relevant options they want to use.");
-        System.out.println(translation);
+        Dictionary testDict = new Dictionary();
+        try {
+            testDict.generateDictionaryFromCSVFile("test/dutchEnglishSmall.csv");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        Translator translator = new Translator(null);
+        translator.addDictionary("Dutch", "English", testDict);
+
+        String text = null;
+        try {
+            text = Files.readString(Path.of("test/dutchSmall.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        List<Pair<String, Set<String>>> translation = translator.translate("Dutch", "English", text);
+        printTranslation(translation);
+
+    }
+
+    private void printTranslation(List<Pair<String, Set<String>>> translation) {
+        StringBuilder out = new StringBuilder();
+        for (Pair<String, Set<String>> pair :translation) {
+            if (pair.getValue() == null) {
+                out.append("<").append(pair.getKey()).append("> ");
+            } else {
+                out.append(pair.getValue().iterator().next()).append(" ");
+            }
+        }
+        System.out.println(out);
     }
 }

@@ -3,69 +3,57 @@ package sample;
 import javafx.util.Pair;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class Translator {
+    private String dictionariesFolder;
     private HashMap<String, Dictionary> dictionaries;
 
     public Translator() {
+        this("dictionaries");
+    }
+
+    public Translator(String folder) {
         dictionaries = new HashMap<>();
-        String[] files = new File("src/sample/dictionaries").list();
-        if (files != null) {
-        for (String dict : files) {
-            // TODO create dictionaries for each file in folder
-            dictionaries.put(dict.replace(".ser",""), new Dictionary());
+        dictionariesFolder = folder;
+        String[] files = null;
+        if (folder != null) {
+            files = new File(folder).list();
+        }
+        if (files != null && files.length > 0) {
+            for (String filename : files) {
+                Dictionary dict_object = new Dictionary();
+                try {
+                    dict_object.loadDict(folder + "/" + filename);
+                    dictionaries.put(filename.replace(".ser",""), dict_object);
+                } catch (ClassNotFoundException | IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public void addEntry(String fromLanguage, String toLanguage, String word, String translation) {
-        Entry entry = findEntry(fromLanguage, toLanguage, word);
-        if (entry == null) {
-            // TODO instantiate Entry and add it to proper dictionary
-        } else {
-            entry.getTranslation().add(translation);
-        }
+    public void addEntry(String fromLanguage, String toLanguage, String wordPhrase, String[] translations) {
+        dictionaries.get(fromLanguage+toLanguage).add(wordPhrase, translations);
     }
 
-    public void removeEntry(String fromLanguage, String toLanguage, String word, String translation) throws NoSuchElementException {
-        Entry entry = findEntry(fromLanguage, toLanguage, word);
-        if (entry == null) {
-            throw new NoSuchElementException("The word does not exist in the dictionary");
-        }
-        if (!entry.getTranslation().contains(translation)) {
-            throw new NoSuchElementException("The meaning for this word is not in the dictionary");
-        }
-        else {
-            entry.getTranslation().remove(translation);
-            cleanupEntry(fromLanguage, toLanguage, word);
-        }
+    public void removeEntry(String fromLanguage, String toLanguage, String wordPhrase, String[] translations) throws NoTranslationException {
+        dictionaries.get(fromLanguage+toLanguage).remove(wordPhrase, translations);
     }
 
-    private void cleanupEntry(String fromLanguage, String toLanguage, String word) {
-        String[] words = word.split("\\s");
-        Entry entry = findEntry(fromLanguage, toLanguage, word);
-        if (entry.getTranslation().size() == 0 && entry.getPhrase().size() == 0) {
-            if (words.length >= 2) {
-                findEntry(fromLanguage, toLanguage, String.join(" ", Arrays.copyOfRange(words, 0, words.length - 2)))
-                        .getPhrase().remove(words[words.length - 1]);
-            } else {
-                //TODO remove entry from dictionary
-            }
-        }
+    public Entry searchAWord(String fromLanguage, String toLanguage, String word) throws NoTranslationException {
+        return dictionaries.get(fromLanguage+toLanguage).searchAWord(word);
     }
 
+    public void addDictionary(String fromLanguage, String toLanguage, Dictionary dict) {
+        dictionaries.put(fromLanguage+toLanguage, dict);
+    }
 
-    //TODO search for entry(word/phrase) in a correct dictionary
-    public Entry findEntry(String fromLanguage, String toLanguage, String word) {
-        //TODO this is just a little test, should be replaced by proper tests when dictionary is implemented
-        if (word.equals("English")) {
-            Entry entry = new Entry(word, "English");
-            entry.getPhrase().put("to", new Entry("to"));
-            entry.getPhrase().get("to").getPhrase().put("Dutch", new Entry("Dutch", "this is a phrase"));
-            return entry;
+    public void saveDictionaries() {
+        for (Dictionary dictionary : dictionaries.values()) {
+            dictionary.writeDictionary(dictionariesFolder);
         }
-        return new Entry(word, "baguette");
     }
 
     private Pair<String, Set<String>> processPhrase(String[] inputTextArray, int i, Entry wordEntry) {
@@ -96,11 +84,10 @@ public class Translator {
             String word = inputTextArray[i];
 
             if (!word.matches(punctuation)) {
-                System.out.println(word);
-                Entry wordEntry = findEntry(fromLanguage, toLanguage, word);
-                if (wordEntry != null) {
+                try {
+                    Entry wordEntry = searchAWord(fromLanguage, toLanguage, word);
                     translation.add(processPhrase(inputTextArray, i, wordEntry));
-                } else {
+                } catch (NoTranslationException e) {
                     translation.add(new Pair<>(word, null));
                 }
             } else {

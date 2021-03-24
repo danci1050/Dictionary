@@ -9,7 +9,7 @@ public class Entry {
 
     private final String word;
     private final Set<String> translation = new HashSet<>();
-    private final Map<String, Entry> phrase = new HashMap<String, Entry>();
+    private final Map<String, Entry> phrase = new HashMap<>();
 
     public Entry(String word) {
 		this.word = word;
@@ -34,5 +34,13 @@ public class Entry {
 
 	public Map<String, Entry> getPhrase() {
 		return phrase;
+	}
+
+	@Override
+	public String toString() {
+		return "Entry{" +
+				"translation=" + translation +
+				", phrase=" + phrase +
+				'}';
 	}
 }

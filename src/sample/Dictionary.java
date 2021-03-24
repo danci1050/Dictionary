@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Dictionary {
@@ -14,40 +15,49 @@ public class Dictionary {
 	// TODO: add a dictionary name field/other metadata(?)
 
 	public Dictionary() {
-		// TODO: a dictionary must be loaded by the Translator class
-		dict = new HashMap<String, Entry>();
-
-		// TODO: call these functions from Translator
-		/*
-		 * try { loadDict("dictionaries/dutchEnglish.ser", true);
-		 * loadDict("dictionaries/englishDutch.ser", true); } catch
-		 * (ClassNotFoundException | IOException e) { e.printStackTrace(); }
-		 */
-		try {
-			// TODO: load actual dictionaries, not the test file.
-			generateDictionaryFromCSVFile("test/wordsample.csv");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		dict = new HashMap<>();
 	}
 
 	/**
 	 * Add an entry to the dictionary
-	 * 
+	 *
 	 * @param original
 	 * @param translations
 	 */
 	public void add(String original, String[] translations) {
-		original = original.strip();
+		original = original.strip().toLowerCase();
+		String[] originalWords = original.split(" ");
 
-		Entry newEntry = new Entry(original);
-		// add all possible translations of the word
-		// TODO: handle phrases correctly
-		for (String translation : translations) {
-			newEntry.addTranslation(translation.strip());
+		Entry entry;
+		int i = 1;
+		// progress down the first word's entry phrases as far as the corresponding entries exist
+		try {
+			entry = searchAWord(originalWords[0]);
+			while (i < originalWords.length) {
+				if (entry.getPhrase().get(originalWords[i]) != null) {
+					entry = entry.getPhrase().get(originalWords[i]);
+					i++;
+				} else {
+					break;
+				}
+			}
+		} catch (NoTranslationException e) {
+			entry = new Entry(originalWords[0]);
+			dict.put(originalWords[0], entry);
 		}
 
-		dict.put(original, newEntry);
+		// create entries which are missing
+		while (i < originalWords.length) {
+			Entry newEntry = new Entry(originalWords[i]);
+			entry.getPhrase().put(originalWords[i], newEntry);
+			entry = newEntry;
+			i++;
+		}
+
+		// add all possible translations of the word/phrase
+		for (String translation : translations) {
+			entry.addTranslation(translation.strip());
+		}
 	}
 
 	/**
@@ -57,6 +67,7 @@ public class Dictionary {
 	 * @throws FileNotFoundException CSV file not found or is not a file
 	 * @throws IOException           general error
 	 */
+	//TODO make sure that the csv files are in the same form and that phrases are loaded correctly
 	public void generateDictionaryFromCSVFile(String path) throws FileNotFoundException, IOException {
 		// Delimiter used for CSV parsing
 		final String delimiter = ",";
@@ -68,7 +79,6 @@ public class Dictionary {
 		// least one translation
 		String line;
 		while ((line = br.readLine()) != null) {
-			System.out.println(line);
 			line = line.toLowerCase();
 			// Split the input line in 2 parts
 			String[] splitLine = line.split(delimiter, 2);
@@ -100,24 +110,51 @@ public class Dictionary {
 	}
 
 	/**
-	 * Removes an entry from the dictionary
-	 * 
-	 * @param word word to remove
+	 * Removes translations from the dictionary
+	 *
+	 * @param original Word/phrase to remove the meaning from
+	 * @param translations The translations to remove
 	 */
-	public void remove(String word) {
-		dict.remove(word);
+	public void remove(String original, String[] translations) throws NoTranslationException {
+		original = original.strip().toLowerCase();
+		String[] originalWords = original.split(" ");
+		Entry[] entries = new Entry[originalWords.length];
+
+		Entry entry = searchAWord(originalWords[0]);
+		entries[0] = entry;
+		for (int i = 1; i < originalWords.length; i++) {
+			if (entry.getPhrase().get(originalWords[i]) != null) {
+				entry = entry.getPhrase().get(originalWords[i]);
+				entries[i] = entry;
+			} else {
+				throw new NoTranslationException();
+			}
+		}
+		for (String translation : translations) {
+			if (!entry.getTranslation().remove(translation)) {
+				throw new NoTranslationException();
+			}
+		}
+
+		// cleanup empty dictionary entries
+		for (int i = originalWords.length - 1; i > 0; i--) {
+			if (entries[i].getPhrase().size() == 0 && entries[i].getTranslation().size() == 0) {
+				entries[i-1].getPhrase().remove(originalWords[i]);
+			} else {
+				return;
+			}
+		}
 	}
 
 	/**
-	 * Searches a word is the dictionary and returns the dictionary entry
+	 * Searches a word (NOT a phrase!) is the dictionary and returns the dictionary entry
 	 * 
 	 * @param searchWord word to search
 	 * @return corresponding entry in the dictionary
 	 */
-	// TODO: rename(?) getTranslation would be more descriptive.
-	public Entry search(String searchWord) throws NoTranslationException {
+	public Entry searchAWord(String searchWord) throws NoTranslationException {
 
-		Entry entry = dict.get(searchWord);
+		Entry entry = dict.get(searchWord.toLowerCase());
 		if (entry == null) {
 			throw new NoTranslationException();
 		} else {

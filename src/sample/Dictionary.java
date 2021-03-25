@@ -8,6 +8,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Dictionary {
 	private Map<String, Entry> dict;
@@ -187,4 +195,57 @@ public class Dictionary {
 		// fromLanguage_toLanguage.ser
 		return;
 	}
+	public File loadFile() {
+
+        JFrame f = new JFrame();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Open");
+        int userSelection = chooser.showOpenDialog(f);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    public void readFile(File file) {
+
+        try {
+            List<String> item = Files.readAllLines(Path.of(file.getPath()));
+
+
+
+        } catch (IOException e) {
+
+        }
+    }
+    public File saveFile() {
+
+        JFrame f = new JFrame();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save");
+        int userSelection = chooser.showSaveDialog(f);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    public void save(File file, String txt) {
+
+        try {
+ 
+                Files.write(Path.of(file.getPath()),txt.getBytes(StandardCharsets.UTF_8));
+
+        } catch (IOException e) {
+
+        }
+    }
+    public void saveTime() throws InterruptedException {
+        long startTime = System.nanoTime();
+        TimeUnit.SECONDS.sleep(5);
+        
+        long endTime = System.nanoTime();
+        long timeElapsed = endTime - startTime;
+        System.out.println(timeElapsed / 1000);
+    }
 }

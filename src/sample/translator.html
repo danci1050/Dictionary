@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  
+ 
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="translator.css">
+
+  <title>Translator</title>
+</head>
+
+<body>
+
+
+  <div class="container">
+    <div class="row mb-3 mt-4 button-row">
+      <button class="google-button mr-2"><span class="icon-translate text-xl"></span>&nbsp;Text</button>
+      <button class="google-button"><i class="fas fa-file-alt text-xl		"></i> &nbsp;Document</button>
+    </div>
+
+    <div class="row row-shadow shadow-sm " style="position: relative;">
+      
+      <div class="fileuploadcontainer position-absolute">
+        <h2>Choose document</h2>
+        <label  class="fileuploadlabel" >Browse your computer</label>
+        
+        
+      
+    </div>
+
+      <button id="swap" class="top-0 right-0"><i class="fas fa-exchange-alt text-xl	"></i></button>
+      <div class="col-6 padding-0">
+        <div class="box border rounded flex flex-col  bg-white t-height " id="input-col">
+          <div class="box__title bg-grey-lighter px-3  border-b pb-0">
+
+
+            <div class="tabs3 position-relative" id="tab2">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link" id="tab2-english">English</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="tab2-dutch">Dutch</a>
+                </li>
+              </ul>
+              <div class="line" id="line2"></div>
+            </div>
+            
+          </div>
+          <div id="textAreaWrapperDiv">
+            <button class="deleteButton top-0 right-0">Delete</button>
+            <textarea placeholder="Type to translate"
+              class="text-grey-darkest flex-1 py-2 pl-2 pr-10 m-1 bg-transparent w-full" name="tt" id="input-textbox"
+              oninput="changeHeight()"></textarea>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-6 padding-0">
+
+        <div class="box border rounded   bg-white " id="output-col">
+          <div class="box__title bg-grey-lighter px-3  border-b pb-0" id="tab">
+            <div>
+              <div class="tabs2 position-relative">
+                <ul class="nav">
+                  <li class="nav-item">
+                    <a class="nav-link" id="tab-dutch">Dutch</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="tab-english">English</a>
+                  </li>
+                </ul>
+                <div class="line" id="line"></div>
+              </div>
+            </div>
+
+
+
+
+
+
+          </div>
+
+        
+
+        <div class="output p-2 m-1" id="outputField">
+
+        </div>
+
+
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+  </div>
+</body>
+
+<script src="translator.js"></script>
+
+</html>

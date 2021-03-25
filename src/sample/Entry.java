@@ -7,11 +7,11 @@ import java.util.Set;
 
 public class Entry {
 
-    private final String word;
-    private final Set<String> translation = new HashSet<>();
-    private final Map<String, Entry> phrase = new HashMap<>();
+	private final String word;
+	private final Set<String> translation = new HashSet<>();
+	private final Map<String, Entry> phrase = new HashMap<>();
 
-    public Entry(String word) {
+	public Entry(String word) {
 		this.word = word;
 	}
 

@@ -69,7 +69,7 @@ public class Controller {
 	}
 
 	// TODO: must be removed after the translator class is merged in
-	Dictionary dict = new Dictionary();
+	Dictionary dict = new Dictionary(null, null);
 
 	@FXML
 	public void search(ActionEvent search) {

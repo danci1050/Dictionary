@@ -23,10 +23,11 @@ public class Translator {
         }
         if (files != null && files.length > 0) {
             for (String filename : files) {
-                Dictionary dict_object = new Dictionary();
+                String[] languages = filename.replace(".ser","").split("_");
+                Dictionary dict_object = new Dictionary(languages[0], languages[1]);
                 try {
                     dict_object.loadDict(folder + "/" + filename);
-                    dictionaries.put(filename.replace(".ser",""), dict_object);
+                    dictionaries.put(String.join("", languages), dict_object);
                 } catch (ClassNotFoundException | IOException e) {
                     e.printStackTrace();
                 }
@@ -54,6 +55,14 @@ public class Translator {
         for (Dictionary dictionary : dictionaries.values()) {
             dictionary.writeDictionary(dictionariesFolder);
         }
+    }
+
+    public Set<Pair<String, String>> getLanguages() {
+        Set<Pair<String, String>> languages = new HashSet<>();
+        for (Dictionary dictionary : dictionaries.values()) {
+            languages.add(new Pair<>(dictionary.getFromLanguage(), dictionary.getToLanguage()));
+        }
+        return languages;
     }
 
     private Pair<String, Set<String>> processPhrase(String[] inputTextArray, int i, Entry wordEntry) {
@@ -99,5 +108,17 @@ public class Translator {
         }
 
         return translation;
+    }
+
+    /**
+     *
+     * @param fromLanguage
+     * @param toLanguage
+     * @param inputText
+     * @return A list, where the first Pair contains the total translation time
+     */
+    //TODO implement
+    public List<Pair<String, Set<String>>> timedTranslate(String fromLanguage, String toLanguage, String inputText) {
+        return null;
     }
 }

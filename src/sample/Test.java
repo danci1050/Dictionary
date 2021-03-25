@@ -2,7 +2,6 @@ package sample;
 
 import javafx.util.Pair;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -30,7 +29,7 @@ public class Test {
 
 
     private void testDictionary() {
-        Dictionary dictionary = new Dictionary();
+        Dictionary dictionary = new Dictionary("Anglish", "Bnglish");
         dictionary.add("this is testing phrase", new String[] {"it works", "how unexpected"});
         System.out.println(dictionary.getDict());
         dictionary.add("this is nice dog", new String[] {"holy", "moly"});
@@ -45,9 +44,10 @@ public class Test {
     }
 
     private void testTranslator() {
-        Dictionary testDict = new Dictionary();
+        Dictionary testDict = new Dictionary("Dutch", "English");
         try {
             testDict.generateDictionaryFromCSVFile("test/dutchEnglishSmall.csv");
+//            testDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList.csv");
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -55,6 +55,7 @@ public class Test {
 
         Translator translator = new Translator(null);
         translator.addDictionary("Dutch", "English", testDict);
+        System.out.println(translator.getLanguages());
 
         String text = null;
         try {

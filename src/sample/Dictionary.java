@@ -11,10 +11,21 @@ import java.util.Map;
 
 public class Dictionary {
 	private Map<String, Entry> dict;
-	// TODO: add a dictionary name field/other metadata(?)
+	private final String fromLanguage;
+	private final String toLanguage;
 
-	public Dictionary() {
+	public Dictionary(String fromLanguage, String toLanguage) {
 		dict = new HashMap<>();
+		this.fromLanguage = fromLanguage;
+		this.toLanguage = toLanguage;
+	}
+
+	public String getFromLanguage() {
+		return fromLanguage;
+	}
+
+	public String getToLanguage() {
+		return toLanguage;
 	}
 
 	/**
@@ -74,7 +85,7 @@ public class Dictionary {
 		FileReader fr = new FileReader(path);
 		BufferedReader br = new BufferedReader(fr);
 
-		// TODO: verify that the CSV file is valid. Should check that each word has at
+		//TODO: verify that the CSV file is valid. Should check that each word has at
 		// least one translation
 		String line;
 		while ((line = br.readLine()) != null) {
@@ -98,7 +109,7 @@ public class Dictionary {
 	 * @throws IOException            failed to read the file
 	 * @throws ClassNotFoundException
 	 */
-	// TODO: verify that the loaded dictionary is valid by checking types of values
+	//TODO: verify that the loaded dictionary is valid by checking types of values
 	// of the map. Also do other safety checks/validation here.
 	public void loadDict(String path) throws IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(path);
@@ -172,6 +183,8 @@ public class Dictionary {
 	 */
 	public void writeDictionary(String path) {
 		// TODO: implement
+		//TODO: dictionaries should be stored in "dictionaries" folder and have filename in the form
+		// fromLanguage_toLanguage.ser
 		return;
 	}
 }

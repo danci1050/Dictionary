@@ -1,6 +1,5 @@
 package sample;
 
-import com.sun.java.accessibility.util.Translator;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -19,11 +18,16 @@ public class Integration{
 
     }
     public void translate(String fromLanguage, String toLanguage, String inputText){
+
         Translator t = new Translator();
-        //t.translate(fromLanguage,toLanguage,inputText);
+        System.out.println(inputText);
+        List<Pair<String, Set<String>>> translation =t.translate(fromLanguage,toLanguage,inputText);
+        System.out.println("works");
+        processTranslation(translation);
 
     }
     private void processTranslation(List<Pair<String, Set<String>>> translation){
+        System.out.println("called");
         for(int i=0; i<translation.size();i++) {
             WebEngine webEngine = webviewtest.getEngine();
             webEngine.executeScript("addTranslation("+i+","+translation.get(i).getKey()+","+ Arrays.deepToString(translation.get(i).getValue().toArray()));

@@ -109,7 +109,7 @@ function changeHeight() {
 };
 
 function test() {
-  javaIntegration.translate();
+  
   for (j = 0; j < 30; j++) {
     addTranslation(j, "Non accusamus. ", ["alt 1alt 1alt 1alt 1", "alt 2"]);
   }
@@ -249,7 +249,7 @@ myInput.addEventListener('keyup', keyevent => {
 function doneTyping () {
     if(previusText!==document.getElementById("input-textbox").value){
     previusText=document.getElementById("input-textbox").value;
-    console.log(previusText);
+    javaIntegration.translate(tab2Location,tab1Location,previusText);
     }
 }
 

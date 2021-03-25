@@ -22,12 +22,10 @@ public class Integration{
         Translator t = new Translator();
         System.out.println(inputText);
         List<Pair<String, Set<String>>> translation =t.translate(fromLanguage,toLanguage,inputText);
-        System.out.println("works");
         processTranslation(translation);
 
     }
     private void processTranslation(List<Pair<String, Set<String>>> translation){
-        System.out.println("called");
         for(int i=0; i<translation.size();i++) {
             WebEngine webEngine = webviewtest.getEngine();
             webEngine.executeScript("addTranslation("+i+","+translation.get(i).getKey()+","+ Arrays.deepToString(translation.get(i).getValue().toArray()));

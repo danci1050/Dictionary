@@ -109,8 +109,7 @@ public class Controller {
 				if(t1== Worker.State.SUCCEEDED){
 					JSObject window = (JSObject) webEngine.executeScript("window");
 					window.setMember("javaIntegration", new Integration());
-					System.out.println("ja");
-					webEngine.executeScript("test()");
+
 				}
 
 			}

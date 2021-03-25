@@ -207,26 +207,22 @@ textarea{
 
 .google-button{
   width: auto !important;
-  display:inline-block i !important;
   text-size-adjust: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   min-width: 64px;
-  border: none;
+  border: 1px solid #dadce0;
   outline: none;
   vertical-align: middle;
-  border-style: solid;
   height: 36px;
   border-radius: 4px;
   padding: 0 15px 0 15px;
-  border-width: 1px;
   font-size: .875rem;
   font-weight: 500;
   text-transform: none;
   box-shadow: none;
-  border-color: #dadce0;
   color: #1967d2;
   overflow: hidden;
   position: relative;

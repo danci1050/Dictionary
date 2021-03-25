@@ -20,11 +20,10 @@ public class Integration{
     }
     public void translate(String fromLanguage, String toLanguage, String inputText){
         Translator t = new Translator();
-        processTranslation(t.translate(fromLanguage,toLanguage,inputText));
+        //t.translate(fromLanguage,toLanguage,inputText);
 
     }
     private void processTranslation(List<Pair<String, Set<String>>> translation){
-
         for(int i=0; i<translation.size();i++) {
             WebEngine webEngine = webviewtest.getEngine();
             webEngine.executeScript("addTranslation("+i+","+translation.get(i).getKey()+","+ Arrays.deepToString(translation.get(i).getValue().toArray()));

@@ -195,7 +195,7 @@ public class Dictionary {
 		// fromLanguage_toLanguage.ser
 		return;
 	}
-	public File loadFile() {
+ public File loadFile() {
 
         JFrame f = new JFrame();
         JFileChooser chooser = new JFileChooser();
@@ -207,16 +207,16 @@ public class Dictionary {
         return null;
     }
 
-    public void readFile(File file) {
-
+    public String readFile(File file) {
+        List<String> text = new ArrayList<>();
         try {
-            List<String> item = Files.readAllLines(Path.of(file.getPath()));
-
-
-
+            Files.lines(Path.of(file.getPath()),StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
+            return text.stream().collect(Collectors.joining(", "));
         } catch (IOException e) {
-
+            System.out.println("io exception");
         }
+
+        return null;
     }
     public File saveFile() {
 
@@ -228,17 +228,19 @@ public class Dictionary {
             return chooser.getSelectedFile();
         }
         return null;
+
     }
 
     public void save(File file, String txt) {
 
         try {
- 
-                Files.write(Path.of(file.getPath()),txt.getBytes(StandardCharsets.UTF_8));
+
+            Files.writeString(Path.of(file.getPath()), txt);
 
         } catch (IOException e) {
-
+            System.out.println("error");
         }
+
     }
     public void saveTime() throws InterruptedException {
         long startTime = System.nanoTime();

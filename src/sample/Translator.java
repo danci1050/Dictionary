@@ -121,4 +121,59 @@ public class Translator {
     public List<Pair<String, Set<String>>> timedTranslate(String fromLanguage, String toLanguage, String inputText) {
         return null;
     }
+     public File loadFile() {
+
+        JFrame f = new JFrame();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Open");
+        int userSelection = chooser.showOpenDialog(f);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    public String readFile(File file) {
+        List<String> text = new ArrayList<>();
+        try {
+            Files.lines(Path.of(file.getPath()),StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
+            return text.stream().collect(Collectors.joining(", "));
+        } catch (IOException e) {
+            System.out.println("io exception");
+        }
+
+        return null;
+    }
+    public File saveFile() {
+
+        JFrame f = new JFrame();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save");
+        int userSelection = chooser.showSaveDialog(f);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            return chooser.getSelectedFile();
+        }
+        return null;
+
+    }
+
+    public void save(File file, String txt) {
+
+        try {
+
+            Files.writeString(Path.of(file.getPath()), txt);
+
+        } catch (IOException e) {
+            System.out.println("error");
+        }
+
+    }
+    public void saveTime() throws InterruptedException {
+        long startTime = System.nanoTime();
+        TimeUnit.SECONDS.sleep(5);
+        
+        long endTime = System.nanoTime();
+        long timeElapsed = endTime - startTime;
+        System.out.println(timeElapsed / 1000);
+    }
 }

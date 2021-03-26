@@ -254,9 +254,9 @@ function doneTyping () {
 }
 
 
-/* var buttons = document.getElementsByClassName("google-button");
+var buttons = document.getElementsByClassName("google-button");
 
-Array.prototype.forEach.call(buttons, function (b) {
+/*Array.prototype.forEach.call(buttons, function (b) {
     b.addEventListener('click', createRipple);
 
 });
@@ -280,5 +280,5 @@ function createRipple (e) {
   circle.classList.add('ripple');
   
 
-} */
+}*/
 

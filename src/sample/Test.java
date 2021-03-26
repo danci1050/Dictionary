@@ -44,6 +44,7 @@ public class Test {
     }
 
     private void testTranslator() {
+        // Test generating Dictionary from CSV
         Dictionary testDict = new Dictionary("Dutch", "English");
         try {
             testDict.generateDictionaryFromCSVFile("test/dutchEnglishSmall.csv");
@@ -53,10 +54,12 @@ public class Test {
             System.exit(1);
         }
 
+        // Test adding Dictionary to empty Translator
         Translator translator = new Translator(null);
         translator.addDictionary("Dutch", "English", testDict);
         System.out.println(translator.getLanguages());
 
+        // Test translating text
         String text = null;
         try {
             text = Files.readString(Path.of("test/dutchSmall.txt"));
@@ -67,6 +70,8 @@ public class Test {
         List<Pair<String, Set<String>>> translation = translator.translate("Dutch", "English", text);
         printTranslation(translation);
 
+        // Test
+        System.out.println(translator.readFile(translator.loadFile()));
     }
 
     private void printTranslation(List<Pair<String, Set<String>>> translation) {

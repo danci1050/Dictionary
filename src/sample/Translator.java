@@ -4,7 +4,14 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import javax.swing.*;
+
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class Translator {
     private String dictionariesFolder;
@@ -121,6 +128,7 @@ public class Translator {
     public List<Pair<String, Set<String>>> timedTranslate(String fromLanguage, String toLanguage, String inputText) {
         return null;
     }
+
      public File loadFile() {
 
         JFrame f = new JFrame();
@@ -136,7 +144,7 @@ public class Translator {
     public String readFile(File file) {
         List<String> text = new ArrayList<>();
         try {
-            Files.lines(Path.of(file.getPath()),StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
+            Files.lines(Path.of(file.getPath()), StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
             return text.stream().collect(Collectors.joining(", "));
         } catch (IOException e) {
             System.out.println("io exception");
@@ -144,6 +152,7 @@ public class Translator {
 
         return null;
     }
+
     public File saveFile() {
 
         JFrame f = new JFrame();
@@ -168,6 +177,7 @@ public class Translator {
         }
 
     }
+
     public void saveTime() throws InterruptedException {
         long startTime = System.nanoTime();
         TimeUnit.SECONDS.sleep(5);

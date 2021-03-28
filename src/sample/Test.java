@@ -23,8 +23,7 @@ public class Test {
 
 	private void process() {
 		testDictionary();
-		// TODO: update the method
-//		testTranslator();
+		testTranslator();
 	}
 
 	private void testDictionary() {
@@ -50,7 +49,7 @@ public class Test {
 		Dictionary testDict = new Dictionary("Dutch", "English");
 		try {
 			testDict.generateDictionaryFromCSVFile("test/dutchEnglishSmall.csv");
-//            testDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList.csv");
+//            testDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList_cleaned.csv");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -73,16 +72,18 @@ public class Test {
 		printTranslation(translation);
 
 		// Test
-		System.out.println(translator.readFile(translator.loadFile()));
+//		System.out.println(translator.readFile(translator.loadFile()));
 	}
 
 	private void printTranslation(List<Pair<String, List<Pair<String, String>>>> translation) {
 		StringBuilder out = new StringBuilder();
 		for (Pair<String, List<Pair<String, String>>> pair : translation) {
 			if (pair.getValue() == null) {
-				out.append("<").append(pair.getKey()).append("> ");
+				out.append(pair.getKey());
+			} else if (pair.getValue().size() == 0) {
+				out.append(" <").append(pair.getKey()).append(">");
 			} else {
-				out.append(pair.getValue().iterator().next()).append(" ");
+				out.append(" ").append(pair.getValue().iterator().next().getKey());
 			}
 		}
 		System.out.println(out);

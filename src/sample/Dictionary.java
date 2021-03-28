@@ -95,6 +95,8 @@ public class Dictionary {
 		// TODO: verify that the CSV file is valid. Should check that each word has at
 		// least one translation
 		String line;
+		// Skip the first line (headers)
+		line = br.readLine();
 		while ((line = br.readLine()) != null) {
 			line = line.toLowerCase();
 			// Split the input line in 3 parts
@@ -156,7 +158,7 @@ public class Dictionary {
 		}
 
 		for (String translation : translations) {
-			entry.getTranslation().removeIf(pair -> (pair.getKey() == translation));
+			entry.getTranslation().removeIf(pair -> (pair.getKey().equals(translation)));
 		}
 
 		// cleanup empty dictionary entries

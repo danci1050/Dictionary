@@ -5,12 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -87,10 +82,11 @@ public class Translator {
 
 		if (wordEntry.getPhrase() != null && (nextEntry = wordEntry.getPhrase().get(inputTextArray[i + 1])) != null) {
 			result = processPhrase(inputTextArray, i + 1, nextEntry);
-			return new Pair<>(wordEntry.getWord() + " " + result.getKey(), result.getValue());
-		} else {
-			return new Pair<>(wordEntry.getWord(), wordEntry.getTranslation());
+			if (result.getValue().size() != 0) {
+				return new Pair<>(wordEntry.getWord() + " " + result.getKey(), result.getValue());
+			}
 		}
+		return new Pair<>(wordEntry.getWord(), wordEntry.getTranslation());
 	}
 
 	// TODO: verify that this method is correct
@@ -112,7 +108,7 @@ public class Translator {
 					Entry wordEntry = searchAWord(fromLanguage, toLanguage, word);
 					translation.add(processPhrase(inputTextArray, i, wordEntry));
 				} catch (NoTranslationException e) {
-					translation.add(new Pair<>(word, null));
+					translation.add(new Pair<>(word, new ArrayList<>(0)));
 				}
 			} else {
 				translation.add(new Pair<>(word, null));

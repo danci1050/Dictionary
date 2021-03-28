@@ -11,25 +11,39 @@ import java.util.Map;
 
 public class Dictionary {
 	private Map<String, Entry> dict;
-	// TODO: add a dictionary name field/other metadata(?)
+	private final String fromLanguage;
+	private final String toLanguage;
 
-	public Dictionary() {
+	public Dictionary(String fromLanguage, String toLanguage) {
 		dict = new HashMap<>();
+		this.fromLanguage = fromLanguage;
+		this.toLanguage = toLanguage;
+	}
+
+	public String getFromLanguage() {
+		return fromLanguage;
+	}
+
+	public String getToLanguage() {
+		return toLanguage;
 	}
 
 	/**
-	 * Add an entry to the dictionary
+	 * Add an entry to the dictionary. "translations" length should be the same as
+	 * "explanations".
 	 *
-	 * @param original
-	 * @param translations
+	 * @param original     word in the original language
+	 * @param translations translations of the word
+	 * @param explanations explanations/comments of the translation
 	 */
-	public void add(String original, String[] translations) {
+	public void add(String original, String[] translations, String[] explanations) {
 		original = original.strip().toLowerCase();
 		String[] originalWords = original.split(" ");
 
 		Entry entry;
 		int i = 1;
-		// progress down the first word's entry phrases as far as the corresponding entries exist
+		// progress down the first word's entry phrases as far as the corresponding
+		// entries exist
 		try {
 			entry = searchAWord(originalWords[0]);
 			while (i < originalWords.length) {
@@ -54,8 +68,8 @@ public class Dictionary {
 		}
 
 		// add all possible translations of the word/phrase
-		for (String translation : translations) {
-			entry.addTranslation(translation.strip());
+		for (int idx = 0; idx < translations.length; idx++) {
+			entry.addTranslation(translations[idx].strip(), explanations[idx].strip());
 		}
 	}
 
@@ -66,10 +80,14 @@ public class Dictionary {
 	 * @throws FileNotFoundException CSV file not found or is not a file
 	 * @throws IOException           general error
 	 */
-	//TODO make sure that the csv files are in the same form and that phrases are loaded correctly
+	// TODO: make sure that the csv files are in the same form and that phrases are
+	// loaded correctly
 	public void generateDictionaryFromCSVFile(String path) throws FileNotFoundException, IOException {
 		// Delimiter used for CSV parsing
-		final String delimiter = ",";
+		final String CSVDelimiter = ",";
+		// Delimiter used to split data in columns
+		// The current implementation is basically a nested CSV
+		final String CSVSecondaryDelimiter = ";";
 
 		FileReader fr = new FileReader(path);
 		BufferedReader br = new BufferedReader(fr);
@@ -77,11 +95,19 @@ public class Dictionary {
 		// TODO: verify that the CSV file is valid. Should check that each word has at
 		// least one translation
 		String line;
+		// Skip the first line (headers)
+		line = br.readLine();
 		while ((line = br.readLine()) != null) {
 			line = line.toLowerCase();
-			// Split the input line in 2 parts
-			String[] splitLine = line.split(delimiter, 2);
-			add(splitLine[0], splitLine[1].split(delimiter));
+			// Split the input line in 3 parts
+			// [Original, [Translations;...], [Explanations;...]]
+			String[] splitLine = line.split(CSVDelimiter);
+			// Only add the translation if the CSV is valid (has 3 columns)
+			// TODO: display a message or throw an exception(?). Could also try to ignore
+			// the invalid line.
+			if (splitLine.length == 3) {
+				add(splitLine[0], splitLine[1].split(CSVSecondaryDelimiter), splitLine[2].split(CSVSecondaryDelimiter));
+			}
 		}
 
 		fr.close();
@@ -111,9 +137,10 @@ public class Dictionary {
 	/**
 	 * Removes translations from the dictionary
 	 *
-	 * @param original Word/phrase to remove the meaning from
+	 * @param original     Word/phrase to remove the meaning from
 	 * @param translations The translations to remove
 	 */
+	// TODO: add a method to remove all translations without specifying them
 	public void remove(String original, String[] translations) throws NoTranslationException {
 		original = original.strip().toLowerCase();
 		String[] originalWords = original.split(" ");
@@ -129,16 +156,15 @@ public class Dictionary {
 				throw new NoTranslationException();
 			}
 		}
+
 		for (String translation : translations) {
-			if (!entry.getTranslation().remove(translation)) {
-				throw new NoTranslationException();
-			}
+			entry.getTranslation().removeIf(pair -> (pair.getKey().equals(translation)));
 		}
 
 		// cleanup empty dictionary entries
 		for (int i = originalWords.length - 1; i > 0; i--) {
 			if (entries[i].getPhrase().size() == 0 && entries[i].getTranslation().size() == 0) {
-				entries[i-1].getPhrase().remove(originalWords[i]);
+				entries[i - 1].getPhrase().remove(originalWords[i]);
 			} else {
 				return;
 			}
@@ -146,7 +172,8 @@ public class Dictionary {
 	}
 
 	/**
-	 * Searches a word (NOT a phrase!) is the dictionary and returns the dictionary entry
+	 * Searches a word (NOT a phrase!) is the dictionary and returns the dictionary
+	 * entry
 	 * 
 	 * @param searchWord word to search
 	 * @return corresponding entry in the dictionary
@@ -172,6 +199,10 @@ public class Dictionary {
 	 */
 	public void writeDictionary(String path) {
 		// TODO: implement
+		// TODO: dictionaries should be stored in "dictionaries" folder and have
+		// filename in the form
+		// fromLanguage_toLanguage.ser
 		return;
 	}
+
 }

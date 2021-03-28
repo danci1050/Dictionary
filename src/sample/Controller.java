@@ -27,7 +27,7 @@ public class Controller {
 	private Pane sidebar;
 
 	@FXML
-	private Pane dictionaryTab ;
+	private Pane dictionaryTab;
 
 	@FXML
 	private Pane settingsTab;
@@ -89,6 +89,7 @@ public class Controller {
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(false);
 	}
+
 	@FXML
 	public void translatorPane(ActionEvent translatorPane){
 		dictionaryTab.setVisible(false);
@@ -144,9 +145,24 @@ public class Controller {
 		settingsTab.setVisible(true);
 	}
 
+	// TODO: must be removed after the translator class is merged in
+	Dictionary dict = new Dictionary(null, null);
 
-
+	@FXML
+	public void search(ActionEvent search) {
+		try {
+			if (dutchEnglish.isSelected()) {
+				searchedWord.setText(
+						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
+				result.setText(dict.searchAWord(searchField.getText().toLowerCase()).getTranslation().toString());
+			} else {
+				searchedWord.setText(
+						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
+				result.setText(dict.searchAWord(searchField.getText().toLowerCase()).getTranslation().toString());
+			}
+		} catch (NoTranslationException e) {
+			result.setText(e.getMessage());
+		}
+	}
 
 }
-
-

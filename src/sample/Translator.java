@@ -41,6 +41,20 @@ public class Translator {
 				}
 			}
 		}
+		//TODO: Remove next line block after dictionaries are serialized
+		if (files != null && files.length == 0) {
+			Dictionary dummyDict = new Dictionary("Dutch", "English");
+			Dictionary dummyDict2 = new Dictionary("English", "Dutch");
+			try {
+				dummyDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList_cleaned.csv");
+				dummyDict2.generateDictionaryFromCSVFile("dictionaries_csv/engWordList_cleaned.csv");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			addDictionary(dummyDict);
+			addDictionary(dummyDict2);
+		}
 	}
 
 	public void addEntry(String fromLanguage, String toLanguage, String wordPhrase, String[] translations,
@@ -57,8 +71,12 @@ public class Translator {
 		return dictionaries.get(fromLanguage + toLanguage).searchAWord(word);
 	}
 
-	public void addDictionary(String fromLanguage, String toLanguage, Dictionary dict) {
-		dictionaries.put(fromLanguage + toLanguage, dict);
+	public void addDictionary(Dictionary dict) {
+		dictionaries.put(dict.getFromLanguage() + dict.getToLanguage(), dict);
+	}
+
+	public HashMap<String, Dictionary> getDictionaries() {
+		return dictionaries;
 	}
 
 	public void saveDictionaries() {

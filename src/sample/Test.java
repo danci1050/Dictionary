@@ -29,11 +29,11 @@ public class Test {
 	private void testDictionary() {
 		Dictionary dictionary = new Dictionary("Anglish", "Bnglish");
 		dictionary.add("ATest", new String[] { "BTest1", "BTest2" }, new String[] { "BExpl1", "BExpl2" });
-		System.out.println(dictionary.getDict());
+		System.out.println(dictionary.getDictValues());
 
 		dictionary.add("A Multi word test here", new String[] { "B Translation words", "BSingleWord" },
 				new String[] { "B Explanation words", "BSingleExpl" });
-		System.out.println(dictionary.getDict());
+		System.out.println(dictionary.getDictValues());
 
 		try {
 			dictionary.remove("A Multi word test here", new String[] { "BSingleWord" });
@@ -41,7 +41,7 @@ public class Test {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		System.out.println(dictionary.getDict());
+		System.out.println(dictionary.getDictValues());
 	}
 
 	private void testTranslator() {
@@ -57,7 +57,7 @@ public class Test {
 
 		// Test adding Dictionary to empty Translator
 		Translator translator = new Translator(null);
-		translator.addDictionary("Dutch", "English", testDict);
+		translator.addDictionary(testDict);
 		System.out.println(translator.getLanguages());
 
 		// Test translating text

@@ -6,8 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Dictionary {
 	private Map<String, Entry> dict;
@@ -113,8 +112,27 @@ public class Dictionary {
 		fr.close();
 	}
 
-	public Map<String, Entry> getDict() {
-		return dict;
+	public Collection<Entry> getDictValues() {
+		Collection<Entry> values = new LinkedList<>();
+		for (Entry entry : dict.values()) {
+			values.addAll(getAllPhrases(entry));
+		}
+		return values;
+	}
+
+	public Collection<Entry> getAllPhrases(Entry entry) {
+		Collection<Entry> values = new LinkedList<>();
+		if (entry.getTranslation().size() != 0) {
+			values.add(entry);
+		}
+		if (entry.getPhrase().size() != 0) {
+			for (Entry phrase : entry.getPhrase().values()) {
+				for (Entry phraseValue : getAllPhrases(phrase)) {
+					values.add(new Entry(entry.getWord() + " " + phraseValue.getWord(), phraseValue.getTranslation()));
+				}
+			}
+		}
+		return values;
 	}
 
 	/**
@@ -205,4 +223,8 @@ public class Dictionary {
 		return;
 	}
 
+	@Override
+	public String toString() {
+		return fromLanguage + " -> " + toLanguage;
+	}
 }

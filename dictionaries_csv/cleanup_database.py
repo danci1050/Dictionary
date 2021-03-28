@@ -1,7 +1,7 @@
 import csv
 from re import search
 
-in_filename = 'dutWordList_simplified.csv'
+in_filename = 'dutWordList.csv'
 out_filename = 'dutWordList_cleaned.csv'
 
 with open(in_filename, encoding="utf8") as csv_in:
@@ -27,9 +27,9 @@ with open(in_filename, encoding="utf8") as csv_in:
                     # translations[i] = translations[i][:expl.start()].strip() + ' ' + translations[i][expl.end():].strip()
                 else:
                     # Append an empty string to avoid potential issues with explanation numbers
-                    explanations.append('')
+                    explanations.append(' ')
 
             row[1] = ';'.join(translations)
-            row.append(';'.join(explanations))
+            row.append(';'.join(explanations) + ";")
             # print(row)
             writer.writerow(row)

@@ -9,17 +9,15 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.util.Pair;
 import netscape.javascript.JSObject;
-
-import java.io.File;
-import java.util.*;
 
 public class Controller {
 
@@ -36,7 +34,7 @@ public class Controller {
 	private Pane translatorTab;
 
 	@FXML
-	private Pane viewDictionaryTab;
+	private BorderPane viewDictionaryTab;
 
 	@FXML
 	private ToggleButton englishDutch;
@@ -60,10 +58,10 @@ public class Controller {
 	private TableView<Entry> dictionaryTable;
 
 	@FXML
-	private TableColumn<Entry,String> s1;
+	private TableColumn<Entry,String> original;
 
 	@FXML
-	private TableColumn<Entry,String> s2;
+	private TableColumn<Entry,String> translations;
 
 	@FXML
 	private Label popupLabel;
@@ -77,6 +75,7 @@ public class Controller {
 
 	private JSObject javaIntegration;
 
+	private final Translator translator = new Translator();
 
 	public void setWebviewtest(WebView webviewtest) {
 		this.webviewtest = webviewtest;
@@ -96,47 +95,49 @@ public class Controller {
 		translatorTab.setVisible(true);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(false);
-
-		WebEngine webEngine = webviewtest.getEngine();
-
-
-		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\translator.html");
-		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
-		webEngine.load(f.toURI().toString());
-
-		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
-			@Override
-			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
-				if(t1== Worker.State.SUCCEEDED){
-					JSObject window = (JSObject) webEngine.executeScript("window");
-					window.setMember("javaIntegration", new Integration());
-
-				}
-
-			}
-		});
-
-		//webEngine.load("http://google.com");
-
-
-
 	}
+
 	@FXML
 	public void viewDictionaryPane(ActionEvent viewDictionaryPane){
-		/*dictionaryTab.setVisible(false);
+		dictionaryTab.setVisible(false);
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(true);
 		settingsTab.setVisible(false);
-		String param;
-		ObservableList<Entry> t = FXCollections.observableArrayList();
 
-		t.add(new Entry("english word","dutch word"));
-		t.add(new Entry("english word1","dutch word2"));
-		t.add(new Entry("english word2","dutch word3"));
-		s1.setCellValueFactory(new PropertyValueFactory<Entry,String>("s1"));
-		s2.setCellValueFactory(new PropertyValueFactory<Entry,String>("s2"));
-		dictionaryTable.getItems().addAll(t);*/
+		// Setup the top Pane
+		FlowPane selectionPane = new FlowPane();
+		viewDictionaryTab.setTop(selectionPane);
+		BorderPane.setMargin(selectionPane, new Insets(10));
+
+		// Setup Choices for languages
+		ChoiceBox<Dictionary> languagesChoiceBox = new ChoiceBox<>();
+		languagesChoiceBox.getItems().addAll(translator.getDictionaries().values());
+		selectionPane.getChildren().add(new Label("Select the dictionary: "));
+		selectionPane.getChildren().add(languagesChoiceBox);
+		languagesChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> selectDictionary(newValue));
+
+		// Setup the table columns
+		original = new TableColumn<>("Original");
+		original.setPrefWidth(200);
+		original.setCellValueFactory(new PropertyValueFactory<>("word"));
+		translations = new TableColumn<>("Translations");
+		translations.setPrefWidth(890);
+		translations.setCellValueFactory(new PropertyValueFactory<>("stringTranslation"));
+
+		// Setup the table
+		dictionaryTable = new TableView<>();
+		dictionaryTable.getColumns().add(original);
+		dictionaryTable.getColumns().add(translations);
+		dictionaryTable.setPlaceholder(new Label("Please select the dictionary"));
+
+		// Add table items
+		ObservableList<Entry> obsList = FXCollections.observableArrayList();
+		dictionaryTable.setItems(obsList);
+		dictionaryTable.getSortOrder().add(original);
+		dictionaryTable.sort();
+		viewDictionaryTab.setCenter(dictionaryTable);
 	}
+
 	@FXML
 	public void settingsPane(ActionEvent settingsPane){
 		dictionaryTab.setVisible(false);
@@ -145,24 +146,8 @@ public class Controller {
 		settingsTab.setVisible(true);
 	}
 
-	// TODO: must be removed after the translator class is merged in
-	Dictionary dict = new Dictionary(null, null);
-
-	@FXML
-	public void search(ActionEvent search) {
-		try {
-			if (dutchEnglish.isSelected()) {
-				searchedWord.setText(
-						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
-				result.setText(dict.searchAWord(searchField.getText().toLowerCase()).getTranslation().toString());
-			} else {
-				searchedWord.setText(
-						searchField.getText().substring(0, 1).toUpperCase() + searchField.getText().substring(1));
-				result.setText(dict.searchAWord(searchField.getText().toLowerCase()).getTranslation().toString());
-			}
-		} catch (NoTranslationException e) {
-			result.setText(e.getMessage());
-		}
+	private void selectDictionary(Dictionary dictionary) {
+		dictionaryTable.getItems().setAll(dictionary.getDictValues());
+		dictionaryTable.sort();
 	}
-
 }

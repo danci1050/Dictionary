@@ -21,7 +21,7 @@
                         <Font size="21.0" />
                      </font>
                   </Button>
-                  <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictinary" textFill="WHITE">
+                  <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictionary" textFill="WHITE">
                      <font>
                         <Font size="21.0" />
                      </font>
@@ -38,7 +38,7 @@
             <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
                   <Pane fx:id="settingsTab" prefHeight="400.0" prefWidth="414.0" />
-                  <Pane fx:id="viewDictionaryTab" prefHeight="400.0" prefWidth="414.0" />
+                  <BorderPane fx:id="viewDictionaryTab" prefHeight="720.0" prefWidth="1090.0" />
                   <Pane fx:id="dictionaryTab" prefHeight="720.0" prefWidth="1092.0">
                      <children>
                         <TextField fx:id="searchField" layoutX="35.0" layoutY="35.0" prefHeight="35.0" prefWidth="332.0" styleClass="search-field" stylesheets="@../dictionary.css" />

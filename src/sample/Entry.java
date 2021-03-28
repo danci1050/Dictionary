@@ -9,7 +9,7 @@ import javafx.util.Pair;
 
 public class Entry {
 	private final String word;
-	private final List<Pair<String, String>> translation = new ArrayList<>();
+	private List<Pair<String, String>> translation = new ArrayList<>();
 	private final Map<String, Entry> phrase = new HashMap<>();
 
 	public Entry(String word) {
@@ -18,6 +18,11 @@ public class Entry {
 
 	public Entry(String word, String translation) {
 		this(word, translation, "");
+	}
+
+	public Entry(String word, List<Pair<String, String>> translation) {
+		this.word = word;
+		this.translation = translation;
 	}
 
 	public Entry(String word, String translation, String explanation) {
@@ -31,6 +36,18 @@ public class Entry {
 
 	public List<Pair<String, String>> getTranslation() {
 		return translation;
+	}
+
+	public String getStringTranslation() {
+		List<String> stringTranslations = new ArrayList<>(translation.size());
+		for (Pair<String, String> aTranslation : translation) {
+			String stringTranslation = aTranslation.getKey();
+			if (!aTranslation.getValue().equals("")) {
+				stringTranslation += "(" + aTranslation.getValue() + ")";
+			}
+			stringTranslations.add(stringTranslation);
+		}
+		return String.join(", ", stringTranslations);
 	}
 
 	/**

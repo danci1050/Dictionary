@@ -68,24 +68,11 @@ public class Test {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		List<Pair<String, List<Pair<String, String>>>> translation = translator.translate("Dutch", "English", text);
-		printTranslation(translation);
+		List<Pair<String, List<Pair<String, String>>>> translation = translator.timedTranslate("Dutch", "English", text);
+		System.out.println(translator.getStringTranslation(translation));
+//		translator.saveTranslation(translator.saveFileDialog(), translation);
 
 		// Test
 //		System.out.println(translator.readFile(translator.loadFile()));
-	}
-
-	private void printTranslation(List<Pair<String, List<Pair<String, String>>>> translation) {
-		StringBuilder out = new StringBuilder();
-		for (Pair<String, List<Pair<String, String>>> pair : translation) {
-			if (pair.getValue() == null) {
-				out.append(pair.getKey());
-			} else if (pair.getValue().size() == 0) {
-				out.append(" <").append(pair.getKey()).append(">");
-			} else {
-				out.append(" ").append(pair.getValue().iterator().next().getKey());
-			}
-		}
-		System.out.println(out);
 	}
 }

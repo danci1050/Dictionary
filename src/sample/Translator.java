@@ -111,11 +111,11 @@ public class Translator {
 	public List<Pair<String, List<Pair<String, String>>>> translate(String fromLanguage, String toLanguage,
 			String inputText) {
 		// Regex pattern matches any Unicode punctuation or symbol
-		String punctuation = "([\\p{P}\\p{S}])";
+		String punctuation = "([\\p{P}\\p{S}\\n])";
 
 		inputText = inputText.replaceAll(punctuation, " $1 ");
 		// Regex pattern matches any whitespace character(s)
-		String[] inputTextArray = inputText.split("[\\s]+");
+		String[] inputTextArray = inputText.split("[ ]+");
 
 		List<Pair<String, List<Pair<String, String>>>> translation = new LinkedList<>();
 		for (int i = 0; i < inputTextArray.length;) {
@@ -146,20 +146,56 @@ public class Translator {
 	 * @param inputText
 	 * @return A list, where the first Pair contains the total translation time
 	 */
-	// TODO implement
-	public List<Pair<String, Set<String>>> timedTranslate(String fromLanguage, String toLanguage, String inputText) {
-		return null;
+	public List<Pair<String, List<Pair<String, String>>>> timedTranslate(String fromLanguage, String toLanguage, String inputText) {
+		List<Pair<String, List<Pair<String, String>>>> translation;
+		long startTime = System.nanoTime();
+
+		translation = translate(fromLanguage, toLanguage, inputText);
+
+		long endTime = System.nanoTime();
+		long timeElapsed = endTime - startTime;
+		translation.add(0, new Pair<>(String.format("translationTime=%.2f ms", timeElapsed / 1e6), null));
+
+		return translation;
 	}
 
-	public File loadFile() {
+	//TODO: potentially implement method to save the exact translation displayed by the GUI, taking into account
+	// the translations selected by the "other translations" dialog
+	public String getStringTranslation (List<Pair<String, List<Pair<String, String>>>> translation) {
+		StringBuilder translationString = new StringBuilder();
+		String time;
+		if ((time = translation.get(0).getKey()).contains("translationTime=")) {
+			translationString.append(String.format("The translation was done in %s\n", time.split("=")[1]));
+			translation.remove(0);
+		}
+
+		for (Pair<String, List<Pair<String, String>>> pair : translation) {
+			if (pair.getValue() == null) {
+				translationString.append(pair.getKey());
+				continue;
+			}
+			if (translationString.length() >= 1 && !translationString.substring(translationString.length() - 1).matches("\\n")) {
+				translationString.append(" ");
+			}
+			if (pair.getValue().size() == 0) {
+				translationString.append("<").append(pair.getKey()).append(">");
+			} else {
+				translationString.append(pair.getValue().get(0).getKey());
+			}
+		}
+
+		return translationString.toString();
+	}
+
+	public File loadFileDialog() {
 
 		JFrame f = new JFrame();
 		JFileChooser chooser = new JFileChooser();
-		chooser.setDialogTitle("Open");
 		int userSelection = chooser.showOpenDialog(f);
 		if (userSelection == JFileChooser.APPROVE_OPTION) {
 			return chooser.getSelectedFile();
 		}
+
 		return null;
 	}
 
@@ -169,43 +205,33 @@ public class Translator {
 			Files.lines(Path.of(file.getPath()), StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
 			return text.stream().collect(Collectors.joining(", "));
 		} catch (IOException e) {
-			System.out.println("io exception");
+			System.out.println("IO Exception");
 		}
 
 		return null;
 	}
 
-	public File saveFile() {
+	public File saveFileDialog() {
 
 		JFrame f = new JFrame();
 		JFileChooser chooser = new JFileChooser();
-		chooser.setDialogTitle("Save");
+		chooser.setSelectedFile(new File("translation.txt"));
 		int userSelection = chooser.showSaveDialog(f);
 		if (userSelection == JFileChooser.APPROVE_OPTION) {
 			return chooser.getSelectedFile();
 		}
+
 		return null;
 
 	}
-
-	public void save(File file, String txt) {
-
+	//TODO: potentially implement method to save the exact translation displayed by the GUI, taking into account
+	// the translations selected by the "other translations" dialog
+	public void saveTranslation(File file, List<Pair<String, List<Pair<String, String>>>> translation) {
 		try {
-
-			Files.writeString(Path.of(file.getPath()), txt);
-
+			Files.writeString(Path.of(file.getPath()), getStringTranslation(translation));
 		} catch (IOException e) {
-			System.out.println("error");
+			System.out.println("IO Exception");
 		}
 
-	}
-
-	public void saveTime() throws InterruptedException {
-		long startTime = System.nanoTime();
-		TimeUnit.SECONDS.sleep(5);
-
-		long endTime = System.nanoTime();
-		long timeElapsed = endTime - startTime;
-		System.out.println(timeElapsed / 1000);
 	}
 }

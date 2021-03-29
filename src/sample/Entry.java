@@ -1,9 +1,6 @@
 package sample;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javafx.util.Pair;
 
@@ -68,8 +65,23 @@ public class Entry {
 		return phrase;
 	}
 
+	public Collection<Entry> getAllPhrases() {
+		Collection<Entry> values = new LinkedList<>();
+		if (translation.size() != 0) {
+			values.add(this);
+		}
+		if (phrase.size() != 0) {
+			for (Entry phrase : phrase.values()) {
+				for (Entry phraseValue : phrase.getAllPhrases()) {
+					values.add(new Entry(word + " " + phraseValue.getWord(), phraseValue.getTranslation()));
+				}
+			}
+		}
+		return values;
+	}
+
 	@Override
 	public String toString() {
-		return "Entry{" + "translation=" + translation + ", phrase=" + phrase + '}';
+		return "Entry{word=" + word + ", translation=" + translation + ", phrase=" + phrase + '}';
 	}
 }

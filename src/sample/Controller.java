@@ -160,6 +160,10 @@ public class Controller {
 	}
 
 	public void addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
+		this.addTranslationDialog(actionEvent, dictionary, "Enter the original word or phrase");
+	}
+
+	public void addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary, String original) {
 		Dialog<Pair<String, String[]>> dialog = new Dialog<>();
 		dialog.setTitle("Add a Translation");
 
@@ -172,7 +176,7 @@ public class Controller {
 
 		// Setup the text elements
 		Label originalLabel	= new Label(dictionary.getFromLanguage());
-		TextField originalField = new TextField("Enter the original word or phrase");
+		TextField originalField = new TextField(original);
 		Label translationLabel = new Label(dictionary.getToLanguage());
 		TextArea translationField = new TextArea("Enter the translation");
 

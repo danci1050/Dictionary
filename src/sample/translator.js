@@ -134,7 +134,7 @@ function onGoogleButtonClick(evt){
   }
   var Filetext = "";
   /*TODO: finsh file upload */
-  function -(text, size, name){
+  function fileupload(text, size, name){
       console.log(text);
       console.log(size);
       document.getElementById("load-file").classList.add("show");

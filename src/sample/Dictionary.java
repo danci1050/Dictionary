@@ -115,22 +115,7 @@ public class Dictionary {
 	public Collection<Entry> getDictValues() {
 		Collection<Entry> values = new LinkedList<>();
 		for (Entry entry : dict.values()) {
-			values.addAll(getAllPhrases(entry));
-		}
-		return values;
-	}
-
-	public Collection<Entry> getAllPhrases(Entry entry) {
-		Collection<Entry> values = new LinkedList<>();
-		if (entry.getTranslation().size() != 0) {
-			values.add(entry);
-		}
-		if (entry.getPhrase().size() != 0) {
-			for (Entry phrase : entry.getPhrase().values()) {
-				for (Entry phraseValue : getAllPhrases(phrase)) {
-					values.add(new Entry(entry.getWord() + " " + phraseValue.getWord(), phraseValue.getTranslation()));
-				}
-			}
+			values.addAll(entry.getAllPhrases());
 		}
 		return values;
 	}

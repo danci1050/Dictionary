@@ -114,7 +114,11 @@ public class Controller {
 		languagesChoiceBox.getItems().addAll(translator.getDictionaries().values());
 		selectionPane.getChildren().add(new Label("Select the dictionary: "));
 		selectionPane.getChildren().add(languagesChoiceBox);
-		languagesChoiceBox.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> selectDictionary(newValue));
+		languagesChoiceBox.getSelectionModel().selectedItemProperty().addListener(
+				(ObservableValue<? extends Dictionary> observableValue, Dictionary oldValue, Dictionary newValue) -> {
+			dictionaryTable.getItems().setAll(newValue.getDictValues());
+			dictionaryTable.sort();
+		});
 
 		// Setup the table columns
 		original = new TableColumn<>("Original");
@@ -144,10 +148,5 @@ public class Controller {
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(true);
-	}
-
-	private void selectDictionary(Dictionary dictionary) {
-		dictionaryTable.getItems().setAll(dictionary.getDictValues());
-		dictionaryTable.sort();
 	}
 }

@@ -1,9 +1,6 @@
 package sample;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javafx.util.Pair;
 
@@ -85,6 +82,6 @@ public class Entry {
 
 	@Override
 	public String toString() {
-		return "Entry{" + "translation=" + translation + ", phrase=" + phrase + '}';
+		return "Entry{word=" + word + ", translation=" + translation + ", phrase=" + phrase + '}';
 	}
 }

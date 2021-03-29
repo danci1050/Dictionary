@@ -161,7 +161,9 @@ public class Dictionary {
 		}
 
 		for (String translation : translations) {
-			entry.getTranslation().removeIf(pair -> (pair.getKey().equals(translation)));
+			if (!entry.getTranslation().removeIf(pair -> (pair.getKey().equals(translation)))) {
+				throw new NoTranslationException("The translation could not be found in the dictionary");
+			}
 		}
 
 		// cleanup empty dictionary entries

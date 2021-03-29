@@ -5,60 +5,62 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.web.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-   <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #fff;">
-         <left>
-            <Pane prefHeight="400.0" prefWidth="187.0" styleClass="menu-grad" stylesheets="@../dictionary.css" BorderPane.alignment="CENTER">
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="720.0" prefWidth="1296.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <left>
+      <Pane fx:id="sidebar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="menu-grad" stylesheets="@../dictionary.css" BorderPane.alignment="CENTER">
+         <children>
+            <Button layoutX="14.0" layoutY="91.0" mnemonicParsing="false" onAction="#dictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Dictionary" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Button>
+            <Button layoutX="14.0" layoutY="131.0" mnemonicParsing="false" onAction="#translatorPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Translator" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Button>
+            <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictinary" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Button>
+            <Button fx:id="settingsButton" layoutX="14.0" layoutY="207.0" mnemonicParsing="false" onAction="#settingsPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Settings" textFill="WHITE">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+   </left>
+   <center>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="viewDictionaryTab" prefHeight="400.0" prefWidth="414.0" />
+            <Pane fx:id="dictionaryTab" prefHeight="720.0" prefWidth="1092.0">
                <children>
-                  <Button layoutX="14.0" layoutY="91.0" mnemonicParsing="false" onAction="#dictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Dictionary" textFill="WHITE">
+                  <TextField fx:id="searchField" layoutX="35.0" layoutY="35.0" prefHeight="35.0" prefWidth="332.0" styleClass="search-field" stylesheets="@../dictionary.css" />
+                  <Button layoutX="334.0" layoutY="36.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" styleClass="search-button" stylesheets="@../dictionary.css" />
+                  <ToggleButton fx:id="dutchEnglish" layoutX="35.0" layoutY="77.0" mnemonicParsing="false" styleClass="language-button" stylesheets="@../dictionary.css" text="Dutch-English" />
+                  <ToggleButton fx:id="englishDutch" layoutX="139.0" layoutY="77.0" mnemonicParsing="false" styleClass="language-button" stylesheets="@../dictionary.css" text="English-Dutch" />
+                  <Label fx:id="searchedWord" layoutX="43.0" layoutY="120.0" prefHeight="31.0" prefWidth="121.0" text="Label">
                      <font>
-                        <Font size="21.0" />
+                        <Font size="35.0" />
                      </font>
-                  </Button>
-                  <Button layoutX="14.0" layoutY="131.0" mnemonicParsing="false" onAction="#translatorPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Translator" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
-                  <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictinary" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
-                  <Button fx:id="settingsButton" layoutX="14.0" layoutY="207.0" mnemonicParsing="false" onAction="#settingsPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Settings" textFill="WHITE">
-                     <font>
-                        <Font size="21.0" />
-                     </font>
-                  </Button>
+                  </Label>
+                  <Label fx:id="result" layoutX="43.0" layoutY="183.0" text="Label" />
                </children>
             </Pane>
-         </left>
-         <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+            <Pane fx:id="translatorTab" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="720.0" prefWidth="1096.0" style="-fx-background-color: black;">
                <children>
-                  <Pane fx:id="settingsTab" prefHeight="400.0" prefWidth="414.0" />
-                  <Pane fx:id="viewDictionaryTab" prefHeight="400.0" prefWidth="414.0" />
-                  <Pane fx:id="dictionaryTab" prefHeight="720.0" prefWidth="1092.0">
-                     <children>
-                        <TextField fx:id="searchField" layoutX="35.0" layoutY="35.0" prefHeight="35.0" prefWidth="332.0" styleClass="search-field" stylesheets="@../dictionary.css" />
-                        <Button layoutX="334.0" layoutY="36.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" styleClass="search-button" stylesheets="@../dictionary.css" />
-                        <ToggleButton fx:id="dutchEnglish" layoutX="35.0" layoutY="77.0" mnemonicParsing="false" styleClass="language-button" stylesheets="@../dictionary.css" text="Dutch-English" />
-                        <ToggleButton fx:id="englishDutch" layoutX="139.0" layoutY="77.0" mnemonicParsing="false" styleClass="language-button" stylesheets="@../dictionary.css" text="English-Dutch" />
-                        <Label fx:id="searchedWord" layoutX="43.0" layoutY="120.0" prefHeight="31.0" prefWidth="121.0" text="Label">
-                           <font>
-                              <Font size="35.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="result" layoutX="43.0" layoutY="183.0" text="Label" />
-                     </children></Pane>
-                  <Pane fx:id="translatorTab" prefHeight="720.0" prefWidth="1090.0">
-                     <children>
-                        <WebView fx:id="webviewtest" prefHeight="720.0" prefWidth="1093.0" />
-                     </children></Pane>
+                  <WebView fx:id="webviewtest" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1095.0" />
                </children>
-            </AnchorPane>
-         </center>
-      </BorderPane>
-   </children>
-</AnchorPane>
+            </Pane>
+            <Pane fx:id="settingsTab" prefHeight="720.0" prefWidth="1096.0">
+               <children>
+                  <WebView fx:id="settingsWebview" layoutX="316.0" layoutY="480.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="107.0" prefWidth="0.0" />
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

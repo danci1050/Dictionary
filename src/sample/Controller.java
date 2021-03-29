@@ -23,6 +23,8 @@ import java.util.*;
 
 public class Controller {
 
+	private static boolean addNewWord;
+
 	@FXML
 	private Pane sidebar;
 
@@ -75,11 +77,21 @@ public class Controller {
 		return webviewtest;
 	}
 
-	private JSObject javaIntegration;
+	@FXML
+	private WebView settingsWebview;
 
+	private static Integration javaSettingsIntegration = new Integration();
 
 	public void setWebviewtest(WebView webviewtest) {
 		this.webviewtest = webviewtest;
+	}
+
+	public static boolean isAddNewWord() {
+		return addNewWord;
+	}
+
+	public static void setAddNewWord(boolean addNewWord) {
+		Controller.addNewWord = addNewWord;
 	}
 
 	@FXML
@@ -88,6 +100,7 @@ public class Controller {
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(false);
+
 	}
 	@FXML
 	public void translatorPane(ActionEvent translatorPane){
@@ -95,9 +108,12 @@ public class Controller {
 		translatorTab.setVisible(true);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(false);
-
+		webviewtest.prefWidthProperty().bind(translatorTab.widthProperty());
+		webviewtest.prefHeightProperty().bind(translatorTab.heightProperty());
 		WebEngine webEngine = webviewtest.getEngine();
 
+		//shitty solution
+		Integration.setWebviewtest(webviewtest);
 
 		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\translator.html");
 		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
@@ -108,7 +124,7 @@ public class Controller {
 			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
 				if(t1== Worker.State.SUCCEEDED){
 					JSObject window = (JSObject) webEngine.executeScript("window");
-					window.setMember("javaIntegration", new Integration());
+						window.setMember("javaIntegration", new Integration());
 
 				}
 
@@ -138,6 +154,23 @@ public class Controller {
 	}
 	@FXML
 	public void settingsPane(ActionEvent settingsPane){
+		WebEngine webEngine = settingsWebview.getEngine();
+		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\settings.html");
+		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
+		webEngine.load(f.toURI().toString());
+
+		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+			@Override
+			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
+				if(t1== Worker.State.SUCCEEDED){
+					System.out.println("js");
+					JSObject window = (JSObject) webEngine.executeScript("window");
+					window.setMember("javaSettingsIntegration", javaSettingsIntegration);
+
+				}
+
+			}
+		});
 		dictionaryTab.setVisible(false);
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(false);

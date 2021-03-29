@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  
- 
+
+
 
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,24 +17,19 @@
 
 
   <div class="container">
+
     <div class="row mb-3 mt-4 button-row">
-      <button class="google-button mr-2"><span class="icon-translate text-xl"></span>&nbsp;Text</button>
-      <button class="google-button"><i class="fas fa-file-alt 		"></i> &nbsp;Document</button>
+      <button id="text-button" class="google-button mr-2"><span class="icon-translate text-xl"></span>&nbsp;Text</button>
+      <button class="google-button"><span class="icon-file-alt-solid text-xl"></span> &nbsp;Document</button>
     </div>
 
-    <div class="row row-shadow shadow-sm " style="position: relative;">
-      
-      <div class="fileuploadcontainer position-absolute">
-        <h2>Choose document</h2>
-        <label  class="fileuploadlabel" >Browse your computer</label>
-        
-        
-      
-    </div>
+    <div class="row row-shadow   mb-5" style="position: relative;">
 
-      <button id="swap" class="top-0 "><span class="icon-swap_horiz text-3xl"></span></i></button>
-      <div class="col-6 padding-0">
-        <div class="box border rounded flex flex-col  bg-white t-height " id="input-col">
+     
+
+      <button id="swap" onclick="swap()"  class="top-0 "><span class="icon-swap_horiz text-3xl swap-icon "></span></i></button>
+      <div class="col-6 padding-0 " id="col-1">
+        <div class="box border rounded-lg	 flex flex-col  bg-white t-height " id="input-col">
           <div class="box__title bg-grey-lighter px-3  border-b pb-0">
 
 
@@ -49,22 +44,23 @@
               </ul>
               <div class="line" id="line2"></div>
             </div>
-            
+
           </div>
           <div id="textAreaWrapperDiv">
-            <button class="deleteButton top-0 right-0">Delete</button>
+            <button class="deleteButton top-0 right-0" onclick="clearTextArea()" id="delete-button"><span
+                class="icon-clear text-3xl"></button>
             <textarea placeholder="Type to translate"
-              class="text-grey-darkest flex-1 py-2 pl-2 pr-10 m-1 bg-transparent w-full" name="tt" id="input-textbox"
-              oninput="changeHeight()"></textarea>
+              class="text-grey-darkest flex-1 py-2 pr-14 pb-5 bg-transparent w-full pl-4" name="tt"
+              id="input-textbox" oninput="changeHeight()"></textarea>
           </div>
         </div>
       </div>
 
 
 
-      <div class="col-6 padding-0">
+      <div class="col-6 padding-0" id="col-2">
 
-        <div class="box border rounded   bg-white " id="output-col">
+        <div class="box border rounded-lg	   bg-white " id="output-col">
           <div class="box__title bg-grey-lighter px-3  border-b pb-0" id="tab">
             <div>
               <div class="tabs2 position-relative">
@@ -79,26 +75,38 @@
                 <div class="line" id="line"></div>
               </div>
             </div>
-
-
-
-
-
-
           </div>
-
-        
-
-        <div class="output p-2 m-1" id="outputField">
-
-        </div>
+          <div class="output pt-2 pr-2 pl-4 pb-5 " id="outputField">
+            <button id="copy" onclick="copy"><span class="icon-content_copy text-2xl swap-icon"></span></button>
+            
+            <button id="save" onclick="download()"><span class="icon-save text-2xl swap-icon"></span></button>
+          </div>
 
 
 
         </div>
 
       </div>
+      <div class="fileuploadcontainer position-absolute" id="fileuploadcontainer">
+        <div id="upload">
+        <h3 id="upload-title">Choose document</h3>
+        <label class="fileuploadlabel" onclick="callReadFile()">Browse your computer</label>
+        <input id="file-input"type="file" name="name" accept=".txt"/>
 
+          
+
+
+
+      </div>
+      <div id="file">
+        <span id="file-file-icon" class="icon-file-alt-solid text-4xl"></span>
+          <span id="file-name" class="text-lg	">Test name</span>
+          <span id="file-size" class="text-sm	">Test file size</span>
+          <button id="file-clear" onclick="hidefile()"><span  class="icon-times-circle text-2xl"></span></button>
+      </div>
+      <button id="load-file" onclick="fileTranslate()">Translate</button>
+
+      </div>
 
     </div>
 
@@ -108,7 +116,7 @@
 </body>
 
 <script src="translator.js"></script>
-<script src="firebug-lite-compressed.js"></script>
+<!-- <script src="firebug-lite-compressed.js"></script>  enable for debugging-->
 
 
 

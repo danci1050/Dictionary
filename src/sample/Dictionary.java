@@ -37,7 +37,7 @@ public class Dictionary {
 	 */
 	public void add(String original, String[] translations, String[] explanations) {
 		original = original.strip().toLowerCase();
-		String[] originalWords = original.split("\\s");
+		String[] originalWords = original.split("[\\s]+");
 
 		Entry entry;
 		int i = 1;

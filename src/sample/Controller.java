@@ -1,23 +1,20 @@
 package sample;
 
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.web.WebEngine;
+import javafx.scene.layout.*;
 import javafx.scene.web.WebView;
+import javafx.util.Pair;
 import netscape.javascript.JSObject;
+
+import java.util.Optional;
 
 public class Controller {
 
@@ -106,19 +103,31 @@ public class Controller {
 
 		// Setup the top Pane
 		FlowPane selectionPane = new FlowPane();
+		selectionPane.setHgap(20);
+		selectionPane.setPrefWrapLength(1090);
 		viewDictionaryTab.setTop(selectionPane);
 		BorderPane.setMargin(selectionPane, new Insets(10));
 
 		// Setup Choices for languages
 		ChoiceBox<Dictionary> languagesChoiceBox = new ChoiceBox<>();
 		languagesChoiceBox.getItems().addAll(translator.getDictionaries().values());
-		selectionPane.getChildren().add(new Label("Select the dictionary: "));
+		selectionPane.getChildren().add(new Label("Select the dictionary:"));
 		selectionPane.getChildren().add(languagesChoiceBox);
 		languagesChoiceBox.getSelectionModel().selectedItemProperty().addListener(
 				(ObservableValue<? extends Dictionary> observableValue, Dictionary oldValue, Dictionary newValue) -> {
 			dictionaryTable.getItems().setAll(newValue.getDictValues());
 			dictionaryTable.sort();
 		});
+
+		// TODO: Update the list after the button fires
+		// Setup the Add translation button
+		Button addButton = new Button("Add Translation");
+		addButton.setOnAction(
+				(ActionEvent actionEvent) -> addTranslationDialog(actionEvent, languagesChoiceBox.getValue())
+		);
+		HBox spacer = new HBox();
+		spacer.setPrefWidth(550);
+		selectionPane.getChildren().addAll(spacer, addButton);
 
 		// Setup the table columns
 		original = new TableColumn<>("Original");
@@ -148,5 +157,57 @@ public class Controller {
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(true);
+	}
+
+	public void addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
+		Dialog<Pair<String, String[]>> dialog = new Dialog<>();
+		dialog.setTitle("Add a Translation");
+
+		if (dictionary == null) {
+			dialog.setContentText("Please select dictionary first");
+			dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+			dialog.show();
+			return;
+		}
+
+		// Setup the text elements
+		Label originalLabel	= new Label(dictionary.getFromLanguage());
+		TextField originalField = new TextField("Enter the original word or phrase");
+		Label translationLabel = new Label(dictionary.getToLanguage());
+		TextArea translationField = new TextArea("Enter the translation");
+
+		// Setup dialog pane
+		GridPane dialogPane = new GridPane();
+		dialogPane.setHgap(20);
+		dialogPane.setVgap(20);
+		dialogPane.addRow(0, originalLabel, originalField);
+		dialogPane.addRow(1, translationLabel, translationField);
+		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.FINISH);
+		dialog.getDialogPane().setContent(dialogPane);
+		dialog.setHeaderText("You can separate translations by semicolon");
+
+		// Setup dialog result converter
+		dialog.setResultConverter(buttonType -> {
+			if (buttonType == ButtonType.FINISH && !originalField.getText().isEmpty() && !translationField.getText().isEmpty()) {
+				return new Pair<>(originalField.getText(), translationField.getText().split(";"));
+			}
+			return null;
+		});
+
+		// Show dialog and add the result into dictionary
+		Optional<Pair<String, String[]>> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			dictionary.add(result.get().getKey(), result.get().getValue(), new String[result.get().getValue().length]);
+		}
+		// Show errors if text fields were empty
+		else if (originalField.getText().isEmpty()) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setContentText("The original word cannot be empty");
+			alert.showAndWait();
+		} else if (translationField.getText().isEmpty()) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setContentText("The translation cannot be empty");
+			alert.showAndWait();
+		}
 	}
 }

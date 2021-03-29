@@ -339,8 +339,6 @@ public class Translator {
 		return null;
 
 	}
-	//TODO: potentially implement method to save the exact translation displayed by the GUI, taking into account
-	// the translations selected by the "other translations" dialog
 	public void saveTranslation(File file, List<Pair<String, List<Pair<String, String>>>> translation) {
 		try {
 			Files.writeString(Path.of(file.getPath()), getStringTranslation(translation));

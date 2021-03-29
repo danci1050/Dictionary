@@ -37,7 +37,7 @@ public class Dictionary {
 	 */
 	public void add(String original, String[] translations, String[] explanations) {
 		original = original.strip().toLowerCase();
-		String[] originalWords = original.split(" ");
+		String[] originalWords = original.split("\\s");
 
 		Entry entry;
 		int i = 1;
@@ -71,7 +71,10 @@ public class Dictionary {
 			if (explanations[idx] == null) {
 				explanations[idx] = "";
 			}
-			entry.addTranslation(translations[idx].strip(), explanations[idx].strip());
+			entry.addTranslation(
+					translations[idx].strip().replaceAll("[\\s]+", " "),
+					explanations[idx].strip().replaceAll("[\\s]+", " ")
+			);
 		}
 	}
 
@@ -149,7 +152,7 @@ public class Dictionary {
 	// TODO: add a method to remove all translations without specifying them
 	public void remove(String original, String[] translations) throws NoTranslationException {
 		original = original.strip().toLowerCase();
-		String[] originalWords = original.split(" ");
+		String[] originalWords = original.split("[\\s]+");
 		Entry[] entries = new Entry[originalWords.length];
 
 		Entry entry = searchAWord(originalWords[0]);
@@ -164,7 +167,9 @@ public class Dictionary {
 		}
 
 		for (String translation : translations) {
-			if (!entry.getTranslation().removeIf(pair -> (pair.getKey().equals(translation)))) {
+			if (!entry.getTranslation().removeIf(
+					pair -> (pair.getKey().equals(translation.replaceAll("[\\s]+", " ")))
+			)) {
 				throw new NoTranslationException("The translation could not be found in the dictionary");
 			}
 		}

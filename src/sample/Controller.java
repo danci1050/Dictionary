@@ -119,11 +119,22 @@ public class Controller {
 			dictionaryTable.sort();
 		});
 
-		// TODO: Update the list after the button fires
 		// Setup the Add translation button
 		Button addButton = new Button("Add Translation");
 		addButton.setOnAction(
-				(ActionEvent actionEvent) -> addTranslationDialog(actionEvent, languagesChoiceBox.getValue())
+				(ActionEvent actionEvent) -> {
+					Dictionary dictionary = languagesChoiceBox.getValue();
+					Optional<Pair<String, String[]>> result = addTranslationDialog(actionEvent, dictionary);
+					if (result.isPresent()) {
+						try {
+							dictionaryTable.getItems().add(dictionary.searchAWord(result.get().getKey()));
+						} catch (NoTranslationException e) {
+							e.printStackTrace();
+							System.exit(1);
+						}
+						dictionaryTable.sort();
+					}
+				}
 		);
 		HBox spacer = new HBox();
 		spacer.setPrefWidth(550);
@@ -159,11 +170,11 @@ public class Controller {
 		settingsTab.setVisible(true);
 	}
 
-	public void addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
-		this.addTranslationDialog(actionEvent, dictionary, "Enter the original word or phrase");
+	public Optional<Pair<String, String[]>> addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
+		return this.addTranslationDialog(actionEvent, dictionary, "Enter the original word or phrase");
 	}
 
-	public void addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary, String original) {
+	public Optional<Pair<String, String[]>> addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary, String original) {
 		Dialog<Pair<String, String[]>> dialog = new Dialog<>();
 		dialog.setTitle("Add a Translation");
 
@@ -171,7 +182,7 @@ public class Controller {
 			dialog.setContentText("Please select dictionary first");
 			dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
 			dialog.show();
-			return;
+			return Optional.empty();
 		}
 
 		// Setup the text elements
@@ -213,5 +224,7 @@ public class Controller {
 			alert.setContentText("The translation cannot be empty");
 			alert.showAndWait();
 		}
+
+		return result;
 	}
 }

@@ -50,14 +50,14 @@
                   <Label fx:id="result" layoutX="43.0" layoutY="183.0" text="Label" />
                </children>
             </Pane>
-            <Pane fx:id="translatorTab" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="720.0" prefWidth="1096.0" style="-fx-background-color: black;">
+            <Pane fx:id="translatorTab" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="720.0" prefWidth="1096.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <WebView fx:id="webviewtest" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1095.0" />
                </children>
             </Pane>
             <Pane fx:id="settingsTab" prefHeight="720.0" prefWidth="1096.0">
                <children>
-                  <WebView fx:id="settingsWebview" layoutX="316.0" layoutY="480.0" maxHeight="-1.0" maxWidth="-1.0" prefHeight="107.0" prefWidth="0.0" />
+                  <WebView fx:id="settingsWebview" minHeight="-1.0" minWidth="-1.0" prefHeight="720.0" prefWidth="1095.0" />
                </children>
             </Pane>
          </children>

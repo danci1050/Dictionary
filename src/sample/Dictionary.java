@@ -68,6 +68,9 @@ public class Dictionary {
 
 		// add all possible translations of the word/phrase
 		for (int idx = 0; idx < translations.length; idx++) {
+			if (explanations[idx] == null) {
+				explanations[idx] = "";
+			}
 			entry.addTranslation(translations[idx].strip(), explanations[idx].strip());
 		}
 	}

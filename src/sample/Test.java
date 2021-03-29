@@ -23,20 +23,45 @@ public class Test {
 
 	private void process() {
 		testDictionary();
-		testTranslator();
+//		testTranslator();
 	}
 
+	/**
+	 * These tests are already described in the test plan. Update the test plan accordingly if making changes.
+	 */
 	private void testDictionary() {
-		Dictionary dictionary = new Dictionary("Anglish", "Bnglish");
+		Dictionary dictionary = new Dictionary("SourceLanguage", "DestinationLanguage");
+
+		// Adding new word
 		dictionary.add("ATest", new String[] { "BTest1", "BTest2" }, new String[] { "BExpl1", "BExpl2" });
 		System.out.println(dictionary.getDictValues());
 
-		dictionary.add("A Multi word test here", new String[] { "B Translation words", "BSingleWord" },
-				new String[] { "B Explanation words", "BSingleExpl" });
+		// Adding new phrase
+		dictionary.add("A Multi word test here", new String[] { "BSingleWord" },
+				new String[] { "BSingleExpl" });
+		dictionary.add("A Multi word test here", new String[] { "B Translation words" },
+				new String[] { "B Explanation words" });
 		System.out.println(dictionary.getDictValues());
 
+		// Removing a phrase translation
 		try {
 			dictionary.remove("A Multi word test here", new String[] { "BSingleWord" });
+		} catch (NoTranslationException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+		System.out.println(dictionary.getDictValues());
+
+		// Removing non-existent phrase translation (Handling exceptions)
+		try {
+			dictionary.remove("A Multi word test here", new String[] { "BSingleWord" });
+		} catch (NoTranslationException e) {
+			e.printStackTrace(System.out);
+		}
+
+		// Cleaning the dictionary after removing all translations and phrases from an Entry
+		try {
+			dictionary.remove("A Multi word test here", new String[] { "B Translation words" });
 		} catch (NoTranslationException e) {
 			e.printStackTrace();
 			System.exit(1);

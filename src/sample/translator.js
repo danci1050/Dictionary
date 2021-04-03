@@ -1,6 +1,6 @@
 
 function showDropdown(element) {
-  var elems = document.getElementsByClassName("show");
+  var elems = document.getElementsByClassName("dropdown-content");
   var rect = element.getBoundingClientRect();
   var maxwidth = window.innerWidth * 0.2;
   var childs = document.getElementById(element.id + "d").childNodes;
@@ -40,6 +40,12 @@ window.onclick = function (event) {
 
 
 function addTranslation(iteration, translation, alternativeTranslations) {
+
+  if(!document.getElementById("outputField").classList.contains("addBackgroundColorToOutput")){
+  document.getElementById("outputField").classList.add("addBackgroundColorToOutput");
+  document.getElementById("copy").classList.add("show");
+  document.getElementById("save").classList.add("show");
+  }
   var parent = document.createElement("div");
   var span = document.createElement("span");
   var div = document.createElement("div");
@@ -63,10 +69,7 @@ function addTranslation(iteration, translation, alternativeTranslations) {
     }
     div.appendChild(alttrans);
 
-    if(document.getElementById("input-textbox").value!=""){
-      //TODO: change background somehow the output field should be adjusted
-    }
-  }
+    
 
   parent.appendChild(span);
   parent.appendChild(div);
@@ -74,27 +77,6 @@ function addTranslation(iteration, translation, alternativeTranslations) {
 
   span.addEventListener("click", function () { showDropdown(this); });
 }
-
-function addUntranslatedWord(word) {
-  var parent = document.createElement("div");
-  var span = document.createElement("span");
-  var div = document.createElement("div");
-
-  translationField = document.getElementById("outputField");
-
-  span.innerHTML = translation;
-
-  span.classList.add("dropbtn");
-  div.classList.add("dropdown-content");
-  parent.classList.add("inlineDiv");
-  span.id = iteration;
-  div.id = iteration + "d";
-
-  parent.appendChild(span);
-  parent.appendChild(div);
-  translationField.appendChild(parent);
-
-  span.addEventListener("click", function () { showDropdown(this); });
 }
 
 
@@ -126,6 +108,55 @@ function onGoogleButtonClick(evt){
     googleButton.classList.remove("google-button-select");
   })
     setGoogleButtonSelection(evt.target);
+    console.log(evt.target.classList.contains("icon-translate"));
+    if(evt.target.nodeName=="BUTTON" || evt.target.parentElement.nodeName=="BUTTON"){
+      
+      if(evt.target.innerHTML.includes("Text") || evt.target.classList.contains("icon-translate")){
+        console.log(document.getElementById("input-textbox").value!="");
+        if(document.getElementById("input-textbox").value!=""){
+          document.getElementById("delete-button").classList.add("show");
+        }
+        document.getElementById("fileuploadcontainer").classList.remove("show");
+        document.getElementById("input-textbox").classList.add("show");
+        document.getElementById("textAreaWrapperDiv").classList.add("textAreaWrapperAddBorder");
+        document.getElementById("outputField").style.removeProperty("display");
+      }else{
+        document.getElementById("file").classList.remove("show");
+        document.getElementById("load-file").classList.remove("show");
+        document.getElementById("delete-button").classList.remove("show");
+        document.getElementById("upload").classList.add("show");
+        document.getElementById("outputField").style.display="none";
+        document.getElementById("fileuploadcontainer").classList.add("show");
+        document.getElementById("input-textbox").classList.remove("show");
+        document.getElementById("textAreaWrapperDiv").classList.remove("textAreaWrapperAddBorder");
+      }
+    }
+  }
+  var Filetext = "";
+  /*TODO: finsh file upload */
+  function fileupload(text, size, name){
+      console.log(text);
+      console.log(size);
+      document.getElementById("load-file").classList.add("show");
+      document.getElementById("file").classList.add("show");
+      document.getElementById("upload").classList.remove("show");
+      
+      Filetext=text;
+      document.getElementById("file-name").innerHTML=name;
+      document.getElementById("file-size").innerHTML=size;
+    
+      
+      
+  }
+
+  function callReadFile(){
+    javaIntegration.readFile()
+  }
+  function hidefile(){
+    document.getElementById("file-input").value="";
+    document.getElementById("load-file").classList.remove("show");
+    document.getElementById("upload").classList.add("show");
+    document.getElementById("file").classList.remove("show");
   }
 
 function setGoogleButtonSelection(googleButton){
@@ -154,6 +185,10 @@ function setLineStyle(tab) {
 
 
 window.onload = function () {
+  const inputElement = document.getElementById("file-input");
+  inputElement.addEventListener("change", fileupload, false);
+  document.getElementById("input-textbox").classList.add("show");
+  document.getElementById("textAreaWrapperDiv").classList.add("textAreaWrapperAddBorder");
   const googleButtons = document.querySelectorAll(".google-button");
   googleButtons.forEach((googleButton, index) =>{
     googleButton.onclick = onGoogleButtonClick;
@@ -237,8 +272,16 @@ let doneTypingInterval = 400;
 let myInput = document.getElementById('input-textbox');
 let previusText = "";
 
+
 //on keyup, start the countdown
 myInput.addEventListener('keyup', keyevent => {
+  if(document.getElementById("input-textbox").value!=""){
+    document.getElementById("delete-button").classList.add("show");
+  }else{
+    document.getElementById("delete-button").classList.remove("show");
+    
+
+  }
     clearTimeout(typingTimer);
     if (myInput.value) {
         typingTimer = setTimeout(doneTyping, doneTypingInterval);
@@ -249,7 +292,9 @@ myInput.addEventListener('keyup', keyevent => {
 function doneTyping () {
     if(previusText!==document.getElementById("input-textbox").value){
     previusText=document.getElementById("input-textbox").value;
-    javaIntegration.translate(tab2Location,tab1Location,previusText);
+    //javaIntegration.translate(tab2Location,tab1Location,previusText);
+    console.log(previusText);
+   
     }
 }
 
@@ -282,3 +327,67 @@ function createRipple (e) {
 
 }*/
 
+function getText(){
+  text="";
+  output=document.getElementById("outputField");
+  spans=document.querySelectorAll("#outputField > div > span")
+  spans.forEach(s => text+=s.innerHTML);
+  return text
+}
+
+function clearTranslation(){
+  console.log(document.getElementById("copy").classList);
+  document.getElementById("outputField").classList.remove("addBackgroundColorToOutput");
+  translationparts = document.querySelectorAll("#outputField > .inlineDiv");
+  translationparts.forEach(element => element.remove());
+  document.getElementById("copy").classList.remove("show");
+  document.getElementById("save").classList.remove("show");
+}
+
+function clearTextArea(){
+  document.getElementById("delete-button").classList.remove("show");
+  
+  document.getElementById("input-textbox").value="";
+}
+
+function copy(){
+  javaIntegration.copy(getText());
+
+}
+
+function swap(){
+  var tab = tab1Location;
+  var tab2 = tab2Location;
+  if(document.getElementById("input-textbox").classList.contains("show")){
+  document.getElementById("input-textbox").value=getText();
+  }
+  let tab2group =document.getElementById("tab").querySelectorAll(" .nav > .nav-item > .nav-link");
+  let tab1group = document.getElementById("tab2").querySelectorAll(" .nav > .nav-item > .nav-link");
+  for(i=0;i<tab1group.length;i++){
+    console.log(i);
+    if(tab1group[i].innerHTML==tab){
+      setLineStyle2(tab1group[i]);
+    }
+    
+  }
+  for(i=0;i<tab2group.length;i++){
+    if(tab2group[i].innerHTML==tab2){
+      setLineStyle(tab2group[i]);
+    }
+  }
+  changeHeight();
+  //javaIntegration.translate(tab2Location,tab1Location,previusText);
+}
+
+function fileTranslate(){
+  document.getElementById("text-button").click();
+  console.log(Filetext);
+  document.getElementById("input-textbox").value=String(Filetext);
+  changeHeight();
+  //javaIntegration.translate(tab2Location,tab1Location,previusText);
+  
+}
+
+function download(){
+  javaIntegration.download(getText);
+}

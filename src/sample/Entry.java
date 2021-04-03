@@ -1,8 +1,8 @@
 package sample;
 
-import java.util.*;
-
 import javafx.util.Pair;
+
+import java.util.*;
 
 public class Entry {
 	private final String word;

@@ -1,18 +1,15 @@
 package sample;
 
+import javafx.util.Pair;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
-import javafx.util.Pair;
 
 public class Translator {
 	private String dictionariesFolder;

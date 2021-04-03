@@ -1,22 +1,28 @@
 package sample;
 
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.Pair;
 import netscape.javascript.JSObject;
 
+import java.io.File;
 import java.util.Optional;
 
 public class Controller {
+
+	private static boolean addNewWord;
 
 	@FXML
 	private Pane sidebar;
@@ -70,12 +76,22 @@ public class Controller {
 		return webviewtest;
 	}
 
-	private JSObject javaIntegration;
+	@FXML
+	private WebView settingsWebview;
 
 	private final Translator translator = new Translator();
+	private static Integration javaSettingsIntegration = new Integration();
 
 	public void setWebviewtest(WebView webviewtest) {
 		this.webviewtest = webviewtest;
+	}
+
+	public static boolean isAddNewWord() {
+		return addNewWord;
+	}
+
+	public static void setAddNewWord(boolean addNewWord) {
+		Controller.addNewWord = addNewWord;
 	}
 
 	@FXML
@@ -92,6 +108,27 @@ public class Controller {
 		translatorTab.setVisible(true);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(false);
+		webviewtest.prefWidthProperty().bind(translatorTab.widthProperty());
+		webviewtest.prefHeightProperty().bind(translatorTab.heightProperty());
+		WebEngine webEngine = webviewtest.getEngine();
+
+		//shitty solution
+		Integration.setWebviewtest(webviewtest);
+
+		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\translator.html");
+		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
+		webEngine.load(f.toURI().toString());
+
+		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+			@Override
+			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
+				if (t1 == Worker.State.SUCCEEDED) {
+					JSObject window = (JSObject) webEngine.executeScript("window");
+					window.setMember("javaIntegration", new Integration());
+
+				}
+			}
+		});
 	}
 
 	@FXML
@@ -164,6 +201,23 @@ public class Controller {
 
 	@FXML
 	public void settingsPane(ActionEvent settingsPane){
+		WebEngine webEngine = settingsWebview.getEngine();
+		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\settings.html");
+		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
+		webEngine.load(f.toURI().toString());
+
+		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
+			@Override
+			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
+				if(t1== Worker.State.SUCCEEDED){
+					System.out.println("js");
+					JSObject window = (JSObject) webEngine.executeScript("window");
+					window.setMember("javaSettingsIntegration", javaSettingsIntegration);
+
+				}
+
+			}
+		});
 		dictionaryTab.setVisible(false);
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(false);

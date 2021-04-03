@@ -1,11 +1,11 @@
 package sample;
 
+import javafx.util.Pair;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-
-import javafx.util.Pair;
 
 public class Test {
 	public static void main(String[] args) {

@@ -100,6 +100,7 @@ public class Dictionary {
 		String line;
 		// Skip the first line (headers)
 		line = br.readLine();
+		int errorCount = 0;
 		while ((line = br.readLine()) != null) {
 			line = line.toLowerCase();
 			// Split the input line in 3 parts
@@ -110,9 +111,13 @@ public class Dictionary {
 			// the invalid line.
 			if (splitLine.length == 3) {
 				add(splitLine[0], splitLine[1].split(CSVSecondaryDelimiter), splitLine[2].split(CSVSecondaryDelimiter));
+			} else {
+//				System.out.println(splitLine.length);
+//				System.out.println(String.join("    ", splitLine));
+				errorCount++;
 			}
 		}
-
+		System.err.println("Number of Errors while parsing CSV: " + errorCount);
 		fr.close();
 	}
 

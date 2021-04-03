@@ -17,7 +17,7 @@ import javafx.scene.web.WebView;
 import javafx.util.Pair;
 import netscape.javascript.JSObject;
 
-import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Optional;
 
 public class Controller {
@@ -115,9 +115,12 @@ public class Controller {
 		//shitty solution
 		Integration.setWebviewtest(webviewtest);
 
-		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\translator.html");
 		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
-		webEngine.load(f.toURI().toString());
+		try {
+			webEngine.load(getClass().getResource("translator.html").toURI().toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
 		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
 			@Override
@@ -202,9 +205,12 @@ public class Controller {
 	@FXML
 	public void settingsPane(ActionEvent settingsPane){
 		WebEngine webEngine = settingsWebview.getEngine();
-		File f = new File(System.getProperty("user.dir")+"\\src\\sample\\settings.html");
 		webEngine.setUserStyleSheetLocation(getClass().getResource("translator.css").toString());
-		webEngine.load(f.toURI().toString());
+		try {
+			webEngine.load(getClass().getResource("settings.html").toURI().toString());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
 
 		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
 			@Override

@@ -4,8 +4,10 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 public class Test {
@@ -89,7 +91,6 @@ public class Test {
 		Dictionary testDict = new Dictionary("Dutch", "English");
 		try {
 			testDict.generateDictionaryFromCSVFile(Path.of("test", "dutchEnglishSmall.csv"));
-//            testDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList_cleaned.csv");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -111,9 +112,14 @@ public class Test {
 		List<Pair<String, List<Pair<String, String>>>> translation = translator.timedTranslate("Dutch", "English",
 				text);
 		System.out.println(translator.getStringTranslation(translation));
-//		translator.saveTranslation(translator.saveFileDialog(), translation);
 
-		// Test
-//		System.out.println(translator.readFile(translator.loadFile()));
+		// Load the serialized dictionaries
+		translator = new Translator();
+
+		// Test translating a news article with the big dictionary
+		translation = translator.timedTranslate("Dutch", "English",
+				translator.readFile(Path.of("test", "dutNewsArticle.txt").toFile()));
+		System.out.println(translator.getStringTranslation(translation));
+		System.out.println(Arrays.deepToString(translation.toArray()));
 	}
 }

@@ -45,25 +45,31 @@ public class Integration{
     }
     private void processTranslation(List<Pair<String, List<Pair<String, String>>>> translation){
         WebEngine webEngine = webviewtest.getEngine();
+        System.err.println(Arrays.deepToString(translation.toArray()));
         for(int i=0; i<translation.size();i++) {
             String translatedWord;
             String[] otherTranslations;
             if (translation.get(i).getValue() != null) {
                 if (translation.get(i).getValue().size() == 0) {
+                    // This is a case where no translation was found
                     //TODO Open the add translation dialog
-                    translatedWord = "- ";
+                    translatedWord = translation.get(i).getKey();
+                    otherTranslations = new String[] {"\"" + translation.get(i).getKey() + "\""};
                 } else {
+                    // This is a case with at least one translation
                     translatedWord = translation.get(i).getValue().get(0).getKey();
-                }
-                otherTranslations = new String[translation.get(i).getValue().size()];
-                for (int j = 0; j < otherTranslations.length; j++) {
-                    otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
+                    otherTranslations = new String[translation.get(i).getValue().size()];
+                    for (int j = 0; j < otherTranslations.length; j++) {
+                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
+                    }
                 }
             } else {
+                // This is a case where the key is a punctuation
                 translatedWord = translation.get(i).getKey();
-                otherTranslations = new String[0];
+                otherTranslations = new String[] {"\"" + translation.get(i).getKey() + "\""};
             }
 
+            System.err.println("addTranslation("+i+",\""+translatedWord+"\","+Arrays.deepToString(otherTranslations)+")");
             webEngine.executeScript("addTranslation("+i+",\""+translatedWord+"\","+Arrays.deepToString(otherTranslations)+")");
         }
     }

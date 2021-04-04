@@ -140,7 +140,7 @@ public class Dictionary {
 	/**
 	 * Loads a serialized dictionary from disk
 	 * 
-	 * @param file                    The serialized dictionary file
+	 * @param file The serialized dictionary file
 	 * @throws IOException            failed to read the file
 	 * @throws ClassNotFoundException
 	 */
@@ -151,7 +151,6 @@ public class Dictionary {
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		dict = (Map<String, Entry>) ois.readObject();
 		ois.close();
-
 	}
 
 	/**
@@ -216,16 +215,40 @@ public class Dictionary {
 	}
 
 	/**
-	 * Serializes and writes a dictionary to a file
+	 * Serializes and writes a dictionary to a file. Filenames are in format
+	 * "fromLanguage_toLanguage.ser"
 	 * 
-	 * @param path path to the file to write to
+	 * @param path path to the directory to write to
 	 */
+
 	public void writeDictionary(Path path) {
-		// TODO: implement
-		// TODO: dictionaries should be stored in "dictionaries" folder and have
-		// filename in the form
-		// fromLanguage_toLanguage.ser
-		return;
+		File directory = path.toFile();
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+
+		if (!directory.isDirectory()) {
+			System.err.println("The path given is not a directory!");
+			return;
+		}
+
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(new File(directory, String.format("%s_%s.ser", fromLanguage, toLanguage)));
+		} catch (FileNotFoundException e) {
+			System.err.println("Could not open the file for writing: ");
+			System.err.println(e);
+			return;
+		}
+
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(dict);
+			oos.close();
+		} catch (IOException e) {
+			System.err.println("An error has occured while writing the file: ");
+			System.err.println(e);
+		}
 	}
 
 	@Override

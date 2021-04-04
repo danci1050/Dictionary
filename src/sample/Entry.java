@@ -2,9 +2,11 @@ package sample;
 
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Entry {
+public class Entry implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private final String word;
 	private List<Pair<String, String>> translation = new ArrayList<>();
 	private final Map<String, Entry> phrase = new HashMap<>();

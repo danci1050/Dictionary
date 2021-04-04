@@ -15,3 +15,6 @@ build.fxbuild
 .classpath
 .project
 .settings/
+
+# Test-generated files
+test/*.ser

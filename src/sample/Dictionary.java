@@ -70,10 +70,8 @@ public class Dictionary {
 			if (explanations[idx] == null) {
 				explanations[idx] = "";
 			}
-			entry.addTranslation(
-					translations[idx].strip().replaceAll("[\\s]+", " "),
-					explanations[idx].strip().replaceAll("[\\s]+", " ")
-			);
+			entry.addTranslation(translations[idx].strip().replaceAll("[\\s]+", " "),
+					explanations[idx].strip().replaceAll("[\\s]+", " "));
 		}
 	}
 
@@ -88,10 +86,11 @@ public class Dictionary {
 	// loaded correctly
 	public void generateDictionaryFromCSVFile(Path path) throws FileNotFoundException, IOException {
 		// Delimiter used for CSV parsing
-		final String CSVDelimiter = ",";
+		// Arbitrary UTF-8 special character
+		final String CSVDelimiter = new String(new byte[] { 0x17 });
 		// Delimiter used to split data in columns
 		// The current implementation is basically a nested CSV
-		final String CSVSecondaryDelimiter = ";";
+		final String CSVSecondaryDelimiter = new String(new byte[] { 0x1b });
 
 		FileReader fr = new FileReader(path.toFile());
 		BufferedReader br = new BufferedReader(fr);
@@ -106,7 +105,7 @@ public class Dictionary {
 			line = line.toLowerCase();
 			// Split the input line in 3 parts
 			// [Original, [Translations;...], [Explanations;...]]
-			String[] splitLine = line.split(CSVDelimiter);
+			String[] splitLine = line.split(CSVDelimiter, -1);
 			// Only add the translation if the CSV is valid (has 3 columns)
 			// TODO: display a message or throw an exception(?). Could also try to ignore
 			// the invalid line.
@@ -118,6 +117,7 @@ public class Dictionary {
 				errorCount++;
 			}
 		}
+		
 		System.err.println("Number of Errors while parsing CSV: " + errorCount);
 		fr.close();
 	}
@@ -171,9 +171,8 @@ public class Dictionary {
 		}
 
 		for (String translation : translations) {
-			if (!entry.getTranslation().removeIf(
-					pair -> (pair.getKey().equals(translation.replaceAll("[\\s]+", " ")))
-			)) {
+			if (!entry.getTranslation()
+					.removeIf(pair -> (pair.getKey().equals(translation.replaceAll("[\\s]+", " "))))) {
 				throw new NoTranslationException("The translation could not be found in the dictionary");
 			}
 		}

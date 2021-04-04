@@ -36,7 +36,10 @@ public class Test {
 	private void testDictionary() {
 		Dictionary dictionary = new Dictionary("SourceLanguage", "DestinationLanguage");
 
+		System.out.println("Testing Dictionary functionality...");
+		System.out.println("========");
 		// Adding new word
+		System.out.print("Can add a new word: ");
 		dictionary.add("ATest", new String[] { "BTest1", "BTest2" }, new String[] { "BExpl1", "BExpl2" });
 		System.out.println(dictionary.getDictValues());
 
@@ -80,8 +83,8 @@ public class Test {
 
 			Dictionary testDict2 = new Dictionary("Dutch", "English");
 			testDict2.loadDict(new File("test/Dutch_English.ser"));
-			System.out.println("Size of serialized dictionary is the same as the original: "
-					+ (testDict.getDictValues().size() == testDict2.getDictValues().size()));
+			System.out.print("Size of serialized dictionary is the same as the original: ");
+			System.out.println(testDict.getDictValues().size() == testDict2.getDictValues().size());
 		} catch (Exception e) {
 		}
 	}
@@ -89,17 +92,32 @@ public class Test {
 	private void testTranslator() {
 		// Test generating Dictionary from CSV
 		Dictionary testDict = new Dictionary("Dutch", "English");
+		System.out.println("Testing csv generation...");
+		System.out.println("========");
 		try {
 			testDict.generateDictionaryFromCSVFile(Path.of("test", "dutchEnglishSmall.csv"));
+			System.out.println("Testing csv generation...");
+
+			System.out.print("The languages are set correctly: ");
+			System.out
+					.println(testDict.getFromLanguage().equals("Dutch") && testDict.getToLanguage().equals("English"));
+
+			System.out.print("The dictionary is of valid size: ");
+			System.out.println(testDict.getDictValues().size() == 41); // 40 Entry objects, 1 Entry has a translation
+																		// and a phrase
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
+		System.out.println("========");
 
+		System.out.println("Testing Translator functionality...");
+		System.out.println("========");
 		// Test adding Dictionary to empty Translator
+		System.out.print("Translator returns correct languages of it's dictionaries: ");
 		Translator translator = new Translator(null);
 		translator.addDictionary(testDict);
-		System.out.println(translator.getLanguages());
+		System.out.println(translator.getLanguages().toString().equals("[Dutch=English]"));
 
 		// Test translating text
 		String text = null;

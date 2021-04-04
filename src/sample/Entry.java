@@ -181,7 +181,7 @@ public class Entry implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Entry{\n\tword=" + word + ",\n\ttranslations=" + translations + ",\n\texplanations=" + explanations
-				+ ",\n\tphrase=" + phrase + "\n}";
+		return "Entry{\n\tword=" + getWord() + ",\n\ttranslations=" + getTranslations() + ",\n\texplanations="
+				+ getExplanations() + ",\n\tphrase=" + getPhrase() + "\n}";
 	}
 }

@@ -67,11 +67,18 @@ public class Dictionary {
 
 		// add all possible translations of the word/phrase
 		for (int idx = 0; idx < translations.length; idx++) {
-			if (explanations[idx] == null) {
-				explanations[idx] = "";
+			String explanation;
+			if (idx >= explanations.length) {
+				explanation = "";
+			} else {
+				if (explanations[idx] == null) {
+					explanations[idx] = "";
+				}
+				explanation = explanations[idx];
 			}
+
 			entry.addTranslation(translations[idx].strip().replaceAll("[\\s]+", " "),
-					explanations[idx].strip().replaceAll("[\\s]+", " "));
+					explanation.strip().replaceAll("[\\s]+", " "));
 		}
 	}
 
@@ -133,14 +140,14 @@ public class Dictionary {
 	/**
 	 * Loads a serialized dictionary from disk
 	 * 
-	 * @param path path to the dictionary
+	 * @param file                    The serialized dictionary file
 	 * @throws IOException            failed to read the file
 	 * @throws ClassNotFoundException
 	 */
 	// TODO: verify that the loaded dictionary is valid by checking types of values
 	// of the map. Also do other safety checks/validation here.
-	public void loadDict(String path) throws IOException, ClassNotFoundException {
-		FileInputStream fis = new FileInputStream(path);
+	public void loadDict(File file) throws IOException, ClassNotFoundException {
+		FileInputStream fis = new FileInputStream(file);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		dict = (Map<String, Entry>) ois.readObject();
 		ois.close();
@@ -213,7 +220,7 @@ public class Dictionary {
 	 * 
 	 * @param path path to the file to write to
 	 */
-	public void writeDictionary(String path) {
+	public void writeDictionary(Path path) {
 		// TODO: implement
 		// TODO: dictionaries should be stored in "dictionaries" folder and have
 		// filename in the form

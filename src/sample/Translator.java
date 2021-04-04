@@ -12,42 +12,42 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Translator {
-	private String dictionariesFolder;
+	private Path dictionariesFolder;
 	private HashMap<String, Dictionary> dictionaries;
 
 	/**
 	 * Initializes the class, loading serialized Dictionaries from "dictionaries" folder.
 	 */
 	public Translator() {
-		this("dictionaries");
+		this(Path.of("dictionaries"));
 	}
 
 	/**
 	 * Initializes the class, loading serialized Dictionaries from the specified folder. No Dictionaries will be
 	 * initialized if null is passed as the argument.
-	 * @param folder Path to the folder with serialized Dictionaries.
+	 * @param folderPath Path to the folder with serialized Dictionaries.
 	 */
-	public Translator(String folder) {
+	public Translator(Path folderPath) {
 		dictionaries = new HashMap<>();
-		dictionariesFolder = folder;
-		String[] files = null;
-		if (folder != null) {
-			files = new File(folder).list();
+		dictionariesFolder = folderPath;
+		File[] files = null;
+		if (folderPath != null) {
+			files = folderPath.toFile().listFiles();
 		}
 		if (files != null && files.length > 0) {
-			for (String filename : files) {
-				String[] languages = filename.replace(".ser", "").split("_");
+			for (File file : files) {
+				String[] languages = file.getName().replace(".ser", "").split("_");
 				Dictionary dict_object = new Dictionary(languages[0], languages[1]);
 				try {
-					dict_object.loadDict(folder + "/" + filename);
+					dict_object.loadDict(file);
 					dictionaries.put(String.join("", languages), dict_object);
 				} catch (ClassNotFoundException | IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		//TODO: Remove next line block after dictionaries are serialized
-		if (files != null && files.length == 0) {
+		//TODO: Remove next line block after dictionaries are serialized and uncomment block before
+		if (folderPath == null) {
 			Dictionary dummyDict = new Dictionary("Dutch", "English");
 			Dictionary dummyDict2 = new Dictionary("English", "Dutch");
 			try {

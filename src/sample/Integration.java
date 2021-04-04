@@ -44,7 +44,9 @@ public class Integration{
 
     }
     private void processTranslation(List<Pair<String, List<Pair<String, String>>>> translation){
+
         WebEngine webEngine = webviewtest.getEngine();
+        webEngine.executeScript("clearTranslation()");
         System.err.println(Arrays.deepToString(translation.toArray()));
         for(int i=0; i<translation.size();i++) {
             String translatedWord;

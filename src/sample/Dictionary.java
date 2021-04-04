@@ -56,7 +56,6 @@ public class Dictionary {
 			entry = new Entry(originalWords[0]);
 			dict.put(originalWords[0], entry);
 		}
-
 		// create entries which are missing
 		while (i < originalWords.length) {
 			Entry newEntry = new Entry(originalWords[i]);
@@ -234,8 +233,10 @@ public class Dictionary {
 
 		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream(new File(directory, String.format("%s_%s.ser", fromLanguage, toLanguage)));
-		} catch (FileNotFoundException e) {
+			RandomAccessFile raf = new RandomAccessFile(
+					new File(directory, String.format("%s_%s.ser", fromLanguage, toLanguage)), "rw");
+			fos = new FileOutputStream(raf.getFD());
+		} catch (IOException e) {
 			System.err.println("Could not open the file for writing: ");
 			System.err.println(e);
 			return;
@@ -245,6 +246,7 @@ public class Dictionary {
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(dict);
 			oos.close();
+			fos.close();
 		} catch (IOException e) {
 			System.err.println("An error has occured while writing the file: ");
 			System.err.println(e);

@@ -1,6 +1,7 @@
 package sample;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -79,20 +80,20 @@ public class Dictionary {
 	/**
 	 * Generate a Map with words as keys and Entry as values
 	 * 
-	 * @param path path to the CSV file
+	 * @param path The path to the CSV file
 	 * @throws FileNotFoundException CSV file not found or is not a file
 	 * @throws IOException           general error
 	 */
 	// TODO: make sure that the csv files are in the same form and that phrases are
 	// loaded correctly
-	public void generateDictionaryFromCSVFile(String path) throws FileNotFoundException, IOException {
+	public void generateDictionaryFromCSVFile(Path path) throws FileNotFoundException, IOException {
 		// Delimiter used for CSV parsing
 		final String CSVDelimiter = ",";
 		// Delimiter used to split data in columns
 		// The current implementation is basically a nested CSV
 		final String CSVSecondaryDelimiter = ";";
 
-		FileReader fr = new FileReader(path);
+		FileReader fr = new FileReader(path.toFile());
 		BufferedReader br = new BufferedReader(fr);
 
 		// TODO: verify that the CSV file is valid. Should check that each word has at

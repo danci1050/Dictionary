@@ -23,7 +23,7 @@ public class Test {
 
 	private void process() {
 		testDictionary();
-//		testTranslator();
+		testTranslator();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class Test {
 		// Test generating Dictionary from CSV
 		Dictionary testDict = new Dictionary("Dutch", "English");
 		try {
-			testDict.generateDictionaryFromCSVFile("test/dutchEnglishSmall.csv");
+			testDict.generateDictionaryFromCSVFile(Path.of("test", "dutchEnglishSmall.csv"));
 //            testDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList_cleaned.csv");
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -51,8 +51,8 @@ public class Translator {
 			Dictionary dummyDict = new Dictionary("Dutch", "English");
 			Dictionary dummyDict2 = new Dictionary("English", "Dutch");
 			try {
-				dummyDict.generateDictionaryFromCSVFile("dictionaries_csv/dutWordList_cleaned.csv");
-				dummyDict2.generateDictionaryFromCSVFile("dictionaries_csv/engWordList_cleaned.csv");
+				dummyDict.generateDictionaryFromCSVFile(Path.of("dictionaries_csv","dutWordList_cleaned.csv"));
+				dummyDict2.generateDictionaryFromCSVFile(Path.of("dictionaries_csv", "engWordList_cleaned.csv"));
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.exit(1);

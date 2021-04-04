@@ -25,10 +25,6 @@ public class Controller {
 	private static boolean addNewWord;
 
 	@FXML
-	private Pane sidebar;
-
-
-	@FXML
 	private Pane settingsTab;
 
 	@FXML
@@ -38,24 +34,6 @@ public class Controller {
 	private BorderPane viewDictionaryTab;
 
 	@FXML
-	private ToggleButton englishDutch;
-
-	@FXML
-	private ToggleButton dutchEnglish;
-
-	@FXML
-	private TextField searchField;
-
-	@FXML
-	private Label searchedWord;
-
-	@FXML
-	private Label result;
-
-	@FXML
-	private Button popup;
-
-	@FXML
 	private TableView<Entry> dictionaryTable;
 
 	@FXML
@@ -63,9 +41,6 @@ public class Controller {
 
 	@FXML
 	private TableColumn<Entry,String> translations;
-
-	@FXML
-	private Label popupLabel;
 
 	@FXML
 	private WebView webviewtest;
@@ -92,7 +67,14 @@ public class Controller {
 		Controller.addNewWord = addNewWord;
 	}
 
+	public Pane getTranslatorTab() {
+		return translatorTab;
+	}
 
+	@FXML
+	public void initialize(){
+		translatorPane(new ActionEvent());
+	}
 
 	@FXML
 	public void translatorPane(ActionEvent translatorPane){

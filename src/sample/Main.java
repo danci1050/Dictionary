@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,10 +13,7 @@ import java.io.IOException;
 
 public class Main extends Application {
 	private static Stage pStage;
-
-	@FXML
-	private Pane sidebar;
-
+	private static Controller controller;
 
 	public static Stage getpStage() {
 		return pStage;
@@ -33,6 +31,7 @@ public class Main extends Application {
 		primaryStage.setScene(new Scene(root, 1280, 720));
 		primaryStage.sizeToScene();
 		primaryStage.show();
+
 	}
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {

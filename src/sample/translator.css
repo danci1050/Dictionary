@@ -38,17 +38,15 @@
 
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?2t61nc');
-  src:  url('fonts/icomoon.eot?2t61nc#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?2t61nc') format('truetype'),
-    url('fonts/icomoon.woff?2t61nc') format('woff'),
-    url('fonts/icomoon.svg?2t61nc#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?mxczbc');
+  src:  url('fonts/icomoon.eot?mxczbc#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?mxczbc') format('truetype'),
+    url('fonts/icomoon.woff?mxczbc') format('woff'),
+    url('fonts/icomoon.svg?mxczbc#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
-
-
 
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
@@ -65,6 +63,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-plus:before {
+  content: "\e908";
+}
+.icon-cross:before {
+  content: "\ea0f";
+}
 .icon-times-circle:before {
   content: "\e907";
 }
@@ -89,12 +93,6 @@
 .icon-copy-regular:before {
   content: "\e903";
 }
-.icon-cross:before {
-  content: "\ea0f";
-}
-
-.t-height{
-  min-height: 100%;
  
 }
 .output{
@@ -232,6 +230,9 @@ input{
 
 #outputField{
   margin: 0 !important;
+  height: calc(100% - 47px);
+  border-radius: .5rem;
+
 }
 
 .addBackgroundColorToOutput{

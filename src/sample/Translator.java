@@ -336,7 +336,11 @@ public class Translator {
 	// TODO: potentially implement method to save the exact translation displayed by
 	// the GUI, taking into account
 	// the translations selected by the "other translations" dialog
-	public String getStringTranslation(List<Pair<String, List<Pair<String, String>>>> translation) {
+	public String getStringTranslation (List<Pair<String, List<Pair<String, String>>>> translation) {
+		if (translation.size() == 0) {
+			return "";
+		}
+
 		StringBuilder translationString = new StringBuilder();
 
 		// Process translation time
@@ -348,22 +352,23 @@ public class Translator {
 
 		// Process translation
 		for (Pair<String, List<Pair<String, String>>> pair : translation) {
-			// The translation is null -> the was not meant to be translated
-			if (pair.getValue() == null) {
-				translationString.append(pair.getKey());
-				continue;
-			}
-			// If the last character was not a newline, append space
+			// If the last character was not a newline and this is not a punctuation, append space
 			if (translationString.length() >= 1
-					&& !translationString.substring(translationString.length() - 1).matches("\\n")) {
+					&& !translationString.substring(translationString.length() - 1).matches("[\\n]")
+					&& !pair.getKey().matches("\\p{P}")) {
 				translationString.append(" ");
 			}
-			// If the word has no translation
-			if (pair.getValue().size() == 0) {
-				translationString.append("<").append(pair.getKey()).append(">");
+			// The translation is null -> the word was not meant to be translated
+			if (pair.getValue() == null) {
+				translationString.append(pair.getKey());
 			} else {
-				// If the word has translation
-				translationString.append(pair.getValue().get(0).getKey());
+				// If the word has no translation
+				if (pair.getValue().size() == 0) {
+					translationString.append("<").append(pair.getKey()).append(">");
+				} else {
+					// If the word has translation
+					translationString.append(pair.getValue().get(0).getKey());
+				}
 			}
 		}
 

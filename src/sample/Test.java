@@ -72,22 +72,30 @@ public class Test {
 		}
 		System.out.println(dictionary.getDictValues());
 
+		// Test generating Dictionary from CSV
+		dictionary = new Dictionary("Dutch", "English");
+		try {
+			dictionary.generateDictionaryFromCSVFile(Path.of("test", "dutchEnglishSmall.csv"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
 		// Serialization tests
 		try {
-			Dictionary testDict = new Dictionary("Dutch", "English");
-			testDict.generateDictionaryFromCSVFile(Path.of("test", "dutchEnglishSmall.csv"));
-			testDict.writeDictionary(Path.of("test"));
+			dictionary.writeDictionary(Path.of("test"));
 
 			Dictionary testDict2 = new Dictionary("Dutch", "English");
-			testDict2.loadDict(new File("test/Dutch_English.ser"));
+			testDict2.loadDict(Path.of("test", "Dutch_English.ser").toFile());
 			System.out.println("Size of serialized dictionary is the same as the original: "
-					+ (testDict.getDictValues().size() == testDict2.getDictValues().size()));
+					+ (dictionary.getDictValues().size() == testDict2.getDictValues().size()));
 		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
 	private void testTranslator() {
-		// Test generating Dictionary from CSV
 		Dictionary testDict = new Dictionary("Dutch", "English");
 		try {
 			testDict.generateDictionaryFromCSVFile(Path.of("test", "dutchEnglishSmall.csv"));
@@ -101,6 +109,45 @@ public class Test {
 		translator.addDictionary(testDict);
 		System.out.println(translator.getLanguages());
 
+		// Create translator with full dictionaries
+		translator = new Translator();
+
+		// Search with an input of a single word
+		try {
+			System.out.println(translator.searchAWord("English", "Dutch", "dog"));
+		} catch (NoTranslationException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		// Search with an input of a single English phrase
+		System.out.println(translator.translate("English", "Dutch", "dog eared book"));
+
+		// Translation with an input of a line of String in English divided by white space (only words no phrases)
+		List<Pair<String, List<Pair<String, String>>>> translation = translator.translate("English", "Dutch",
+				"Traffic is set to resume in both directions through the canal at 20:00 local time (18:00 GMT), officials say.");
+		System.out.println(translation);
+		System.out.println(translator.getStringTranslation(translation));
+
+		// Translation with an input of a line of String in English (phrases included)
+		translation = translator.translate("English", "Dutch",
+				"Everytime I go to the local library, I get a dog eared book.");
+		System.out.println(translation);
+		System.out.println(translator.getStringTranslation(translation));
+
+		// Handling inputs with numbers and characters included
+		translation = translator.translate("English", "Dutch",
+				"Tug boats honked their horns in celebration as the 400m-long (1,300ft) Ever Given was dislodged on Monday.");
+		System.out.println(translation);
+		System.out.println(translator.getStringTranslation(translation));
+
+		// Input empty String
+		translation = translator.translate("English", "Dutch",
+				"");
+		System.out.println(translation);
+		System.out.println(translator.getStringTranslation(translation));
+
+		System.exit(10);
 		// Test translating text
 		String text = null;
 		try {
@@ -109,9 +156,21 @@ public class Test {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		List<Pair<String, List<Pair<String, String>>>> translation = translator.timedTranslate("Dutch", "English",
+		translation = translator.timedTranslate("Dutch", "English",
 				text);
 		System.out.println(translator.getStringTranslation(translation));
+		if (!"""
+				<Wat> <leuk> <om> <jou> <eindelijk> <weer> <eens> <te> <schrijven>. i have <je> <lang> <niet> <gezien>. i living now in amsterdam. i
+				living in a small house together with my friend. next my house is a football-field. there footbal i
+				each saturday together with yet a couple friends. i have made new friends on there football-club.
+				she name aman and john. john is eighteen year and lives also in amsterdam. aman is there <oudere> brother from
+				john.
+				<Nederland> <bevalt> <mij> <erg> <goed>. <Het> <enige> <nadeel> is <dat> <het> <nogal> <vaak> <regent>. there <mensen> <zijn> <wel> <erg>
+				<aardig> and <altijd> <behulpzaam>. <Het> <leren> from there <Nederlandse> <taal> <gaat> <goed>. <Alleen> there <grammatica> <vind> i
+				<lastig>. i have <al> <veel> new <woorden> <geleerd>. <Hoe> <gaat> <het> <bij> <jou> in <Duitsland>? <Hoe> <gaat> <het> on <je>
+				new <school>? <Laat> <mij> <weten> <hoe> <het> there is in <Duitsland>! i <ben> <benieuwd> <naar> <je> <reactie>."""
+				.equals(translator.getStringTranslation(translation))) System.err.println("The translation is different");
+		else System.out.println("The translation is correct");
 
 		// Load the serialized dictionaries
 		translator = new Translator();

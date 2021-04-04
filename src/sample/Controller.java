@@ -27,8 +27,6 @@ public class Controller {
 	@FXML
 	private Pane sidebar;
 
-	@FXML
-	private Pane dictionaryTab;
 
 	@FXML
 	private Pane settingsTab;
@@ -94,17 +92,10 @@ public class Controller {
 		Controller.addNewWord = addNewWord;
 	}
 
-	@FXML
-	public void dictionaryPane(ActionEvent dictionaryPane){
-		dictionaryTab.setVisible(true);
-		translatorTab.setVisible(false);
-		viewDictionaryTab.setVisible(false);
-		settingsTab.setVisible(false);
-	}
+
 
 	@FXML
 	public void translatorPane(ActionEvent translatorPane){
-		dictionaryTab.setVisible(false);
 		translatorTab.setVisible(true);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(false);
@@ -136,7 +127,6 @@ public class Controller {
 
 	@FXML
 	public void viewDictionaryPane(ActionEvent viewDictionaryPane){
-		dictionaryTab.setVisible(false);
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(true);
 		settingsTab.setVisible(false);
@@ -224,7 +214,6 @@ public class Controller {
 
 			}
 		});
-		dictionaryTab.setVisible(false);
 		translatorTab.setVisible(false);
 		viewDictionaryTab.setVisible(false);
 		settingsTab.setVisible(true);

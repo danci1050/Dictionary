@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Translator {
-	private Path dictionariesFolder;
+	private Path dictionariesFolderPath;
 	private HashMap<String, Dictionary> dictionaries;
 
 	/**
@@ -29,13 +29,35 @@ public class Translator {
 	 */
 	public Translator(Path folderPath) {
 		dictionaries = new HashMap<>();
-		dictionariesFolder = folderPath;
-		File[] files = null;
-		if (folderPath != null) {
-			files = folderPath.toFile().listFiles();
+		if (folderPath == null) {
+			dictionariesFolderPath = null;
+			return;
 		}
-		if (files != null && files.length > 0) {
-			for (File file : files) {
+
+		File folderFile = folderPath.toFile();
+		File[] dictionaryFiles;
+		// Check for the existence of the directory - if it does not exist, try to create it. If it's not a directory
+		// print an error
+		if (folderFile.exists()) {
+			if (folderFile.isDirectory()) {
+				dictionariesFolderPath = folderPath;
+				dictionaryFiles = folderFile.listFiles();
+			} else {
+				System.err.println("The directory " + folderPath + "is not a directory.");
+				dictionariesFolderPath = null;
+				return;
+			}
+		} else {
+			 if (folderFile.mkdirs()) {
+			 	dictionariesFolderPath = folderPath;
+				 dictionaryFiles = new File[0];
+			 } else {
+			 	dictionariesFolderPath = null;
+			 	return;
+			 }
+		}
+		if (dictionaryFiles != null && dictionaryFiles.length > 0) {
+			for (File file : dictionaryFiles) {
 				String[] languages = file.getName().replace(".ser", "").split("_");
 				Dictionary dict_object = new Dictionary(languages[0], languages[1]);
 				try {
@@ -47,7 +69,7 @@ public class Translator {
 			}
 		}
 		//TODO: Remove next line block after dictionaries are serialized and uncomment block before
-		if (files != null && files.length == 0) {
+		if (dictionaryFiles != null && dictionaryFiles.length == 0) {
 			Dictionary dummyDict = new Dictionary("Dutch", "English");
 			Dictionary dummyDict2 = new Dictionary("English", "Dutch");
 			try {
@@ -122,9 +144,9 @@ public class Translator {
 	 * loaded the Dictionaries at initialization. Does nothing if the Translator was initialized from "null" directory.
 	 */
 	public void saveDictionaries() {
-		if (dictionariesFolder != null) {
+		if (dictionariesFolderPath != null) {
 			for (Dictionary dictionary : dictionaries.values()) {
-				dictionary.writeDictionary(dictionariesFolder);
+				dictionary.writeDictionary(dictionariesFolderPath);
 			}
 		}
 	}

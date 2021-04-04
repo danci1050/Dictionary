@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.web.WebView?>
+<?import javafx.scene.web.*?>
+
 <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="720.0" prefWidth="1296.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <left>
       <Pane fx:id="sidebar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="menu-grad" stylesheets="@../dictionary.css" BorderPane.alignment="CENTER">
@@ -18,7 +19,7 @@
                   <Font size="21.0" />
                </font>
             </Button>
-            <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictinary" textFill="WHITE">
+            <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictionary" textFill="WHITE">
                <font>
                   <Font size="21.0" />
                </font>

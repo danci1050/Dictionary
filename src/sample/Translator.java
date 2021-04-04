@@ -156,6 +156,10 @@ public class Translator {
 		Entry nextEntry;
 		String skipWhenProcessing = "[\\n]+";
 
+		if (i == inputTextArray.length - 1) {
+			return new Pair<>(wordEntry.getWord(), wordEntry.getTranslation());
+		}
+
 		// If the next word is a character which should be skipped when processing phrases, skip it
 		if (inputTextArray[i + 1].matches(skipWhenProcessing)) {
 			return processPhrase(inputTextArray, i + 1, wordEntry);
@@ -198,6 +202,13 @@ public class Translator {
 	// TODO: verify that this method is correct
 	public List<Pair<String, List<Pair<String, String>>>> translate(String fromLanguage, String toLanguage,
 			String inputText) {
+
+		List<Pair<String, List<Pair<String, String>>>> translation = new LinkedList<>();
+
+		if (inputText.matches("^[\\s]*$")) {
+			return translation;
+		}
+
 		// Regex pattern matches any Unicode punctuation, symbol, newline character or number
 		String doNotTranslate = "([\\p{P}\\p{S}\\n0-9]+)";
 
@@ -205,7 +216,6 @@ public class Translator {
 		inputText = inputText.replaceAll(doNotTranslate, " $1 ");
 		String[] inputTextArray = inputText.split("[ ]+");
 
-		List<Pair<String, List<Pair<String, String>>>> translation = new LinkedList<>();
 		for (int i = 0; i < inputTextArray.length;) {
 			String word = inputTextArray[i];
 

@@ -39,16 +39,25 @@ public class Integration{
     public void translate(String fromLanguage, String toLanguage, String inputText){
 
         Translator t = new Translator();
-        System.out.println(inputText);
-        List<Pair<String, List<Pair<String, String>>>> translation =t.translate(fromLanguage,toLanguage,inputText);
+        List<Pair<String, List<Pair<String, String>>>> translation = t.translate(fromLanguage,toLanguage,inputText);
         processTranslation(translation);
 
     }
     private void processTranslation(List<Pair<String, List<Pair<String, String>>>> translation){
         WebEngine webEngine = webviewtest.getEngine();
         for(int i=0; i<translation.size();i++) {
-
-            webEngine.executeScript("addTranslation("+i+","+translation.get(i).getKey()+","+ Arrays.deepToString(translation.get(i).getValue().toArray())+")");
+            String translatedWord;
+            if (translation.get(i).getValue().size() == 0) {
+                //TODO Open the add translation dialog
+                translatedWord = "- ";
+            } else {
+                translatedWord = translation.get(i).getValue().get(0).getKey();
+            }
+            String[] otherTranslations = new String[translation.get(i).getValue().size()];
+            for (int j = 0; j < otherTranslations.length; j++) {
+                otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
+            }
+            webEngine.executeScript("addTranslation("+i+",\""+translatedWord+"\","+Arrays.deepToString(otherTranslations)+")");
         }
     }
     // not an ideal solution but I cant get the clipboard API to work on javafx webview
@@ -66,7 +75,9 @@ public class Integration{
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File selectedFile = fileChooser.showSaveDialog(Main.getpStage());
-        Files.writeString(Path.of(selectedFile.getPath()), text);
+        if (selectedFile != null) {
+            Files.writeString(Path.of(selectedFile.getPath()), text);
+        }
     }
 
     public void toggleAddNewWord(boolean ToggleValue){
@@ -87,17 +98,19 @@ public class Integration{
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File selectedFile = fileChooser.showOpenDialog(Main.getpStage());
-        Files.lines(Path.of(selectedFile.getPath()), StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
-        r[0]=text.stream().collect(Collectors.joining(", "));
-        r[2]=selectedFile.getName();
-        String[] aMultiples = {"KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
-        double nBytes  = Double.valueOf(selectedFile.length());
-        r[1]=String.valueOf(nBytes+" bytes");
-        for (int i = 0; nBytes > 1000; i++) {
-            nBytes /= Double.valueOf(1000);
-            r[1] = String.valueOf(df.format(nBytes)+ " " + aMultiples[i]);
+        if (selectedFile != null) {
+            Files.lines(Path.of(selectedFile.getPath()), StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
+            r[0]=text.stream().collect(Collectors.joining(", "));
+            r[2]=selectedFile.getName();
+            String[] aMultiples = {"KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"};
+            double nBytes  = Double.valueOf(selectedFile.length());
+            r[1]=String.valueOf(nBytes+" bytes");
+            for (int i = 0; nBytes > 1000; i++) {
+                nBytes /= Double.valueOf(1000);
+                r[1] = String.valueOf(df.format(nBytes)+ " " + aMultiples[i]);
+            }
+            System.out.println(r[1]);
+            webEngine.executeScript("fileupload(\""+r[0]+"\",\""+r[1]+"\",\""+r[2]+"\")");
         }
-        System.out.println(r[1]);
-        webEngine.executeScript("fileupload(\""+r[0]+"\",\""+r[1]+"\",\""+r[2]+"\")");
     }
 }

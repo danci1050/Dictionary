@@ -270,7 +270,7 @@ function setLineStyle2(tab2) {
 let typingTimer;                //timer identifier
 let doneTypingInterval = 400;  
 let myInput = document.getElementById('input-textbox');
-let previusText = "";
+let previousText = "";
 
 
 //on keyup, start the countdown
@@ -290,10 +290,10 @@ myInput.addEventListener('keyup', keyevent => {
 
 //user is "finished typing," do something
 function doneTyping () {
-    if(previusText!==document.getElementById("input-textbox").value){
-    previusText=document.getElementById("input-textbox").value;
-    //javaIntegration.translate(tab2Location,tab1Location,previusText);
-    console.log(previusText);
+    if(previousText!==document.getElementById("input-textbox").value){
+    previousText=document.getElementById("input-textbox").value;
+    javaIntegration.translate(tab2Location,tab1Location,previousText);
+    console.log(previousText);
    
     }
 }
@@ -376,7 +376,7 @@ function swap(){
     }
   }
   changeHeight();
-  //javaIntegration.translate(tab2Location,tab1Location,previusText);
+  //javaIntegration.translate(tab2Location,tab1Location,previousText);
 }
 
 function fileTranslate(){
@@ -384,7 +384,7 @@ function fileTranslate(){
   console.log(Filetext);
   document.getElementById("input-textbox").value=String(Filetext);
   changeHeight();
-  //javaIntegration.translate(tab2Location,tab1Location,previusText);
+  //javaIntegration.translate(tab2Location,tab1Location,previousText);
   
 }
 

@@ -2,9 +2,9 @@ package sample;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class Dictionary {
@@ -56,6 +56,7 @@ public class Dictionary {
 			entry = new Entry(originalWords[0]);
 			dict.put(originalWords[0], entry);
 		}
+
 		// create entries which are missing
 		while (i < originalWords.length) {
 			Entry newEntry = new Entry(originalWords[i]);
@@ -66,18 +67,15 @@ public class Dictionary {
 
 		// add all possible translations of the word/phrase
 		for (int idx = 0; idx < translations.length; idx++) {
-			String explanation;
-			if (idx >= explanations.length) {
-				explanation = "";
-			} else {
-				if (explanations[idx] == null) {
-					explanations[idx] = "";
+			entry.addTranslation(translations[idx]);
+			// Add explanation if present
+			if (idx < explanations.length) {
+				String explanation = explanations[idx];
+				if (!explanation.equals("")) {
+					// These strings should already be stripped and cleaned from punctuation
+					entry.setExplanation(translations[idx].strip(), explanation.strip());
 				}
-				explanation = explanations[idx];
 			}
-
-			entry.addTranslation(translations[idx].replaceAll("[\\s,]+", " ").strip(),
-					explanation.replaceAll("[\\s,]+", " ").strip());
 		}
 	}
 
@@ -93,10 +91,10 @@ public class Dictionary {
 	public void generateDictionaryFromCSVFile(Path path) throws FileNotFoundException, IOException {
 		// Delimiter used for CSV parsing
 		// Arbitrary UTF-8 special character
-		final String CSVDelimiter = new String(new byte[] { 0x17 });
+		final String CSVDelimiter = new String(new byte[] { 0x17 }); // ETB char
 		// Delimiter used to split data in columns
 		// The current implementation is basically a nested CSV
-		final String CSVSecondaryDelimiter = new String(new byte[] { 0x1b });
+		final String CSVSecondaryDelimiter = new String(new byte[] { 0x1b }); // ESC char
 
 		FileReader fr = new FileReader(path.toFile());
 		BufferedReader br = new BufferedReader(fr);
@@ -128,8 +126,9 @@ public class Dictionary {
 		fr.close();
 	}
 
-	public Collection<Entry> getDictValues() {
-		Collection<Entry> values = new LinkedList<>();
+
+	public List<Entry> getDictValues() {
+		List<Entry> values = new LinkedList<>();
 		for (Entry entry : dict.values()) {
 			values.addAll(entry.getAllPhrases());
 		}
@@ -176,15 +175,12 @@ public class Dictionary {
 		}
 
 		for (String translation : translations) {
-			if (!entry.getTranslation()
-					.removeIf(pair -> (pair.getKey().equals(translation.replaceAll("[\\s]+", " "))))) {
-				throw new NoTranslationException("The translation could not be found in the dictionary");
-			}
+			entry.removeTranslation(translation.replaceAll("[\\s]+", " "));
 		}
 
 		// cleanup empty dictionary entries
 		for (int i = originalWords.length - 1; i > 0; i--) {
-			if (entries[i].getPhrase().size() == 0 && entries[i].getTranslation().size() == 0) {
+			if (entries[i].getPhrase().size() == 0 && entries[i].getTranslations().size() == 0) {
 				entries[i - 1].getPhrase().remove(originalWords[i]);
 			} else {
 				return;

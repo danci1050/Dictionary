@@ -26,16 +26,16 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		pStage=primaryStage;
-		Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+		Parent root = loader.load();
+		controller = loader.getController();
 		primaryStage.setTitle("Dictionary");
 		primaryStage.setScene(new Scene(root, 1280, 720));
 		primaryStage.sizeToScene();
 		primaryStage.show();
-
 	}
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
-		Translator t = new Translator();
 		launch(args);
 	}
 }

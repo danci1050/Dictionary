@@ -47,7 +47,7 @@ public class Translator {
 			}
 		}
 		//TODO: Remove next line block after dictionaries are serialized and uncomment block before
-		if (folderPath == null) {
+		if (files != null && files.length == 0) {
 			Dictionary dummyDict = new Dictionary("Dutch", "English");
 			Dictionary dummyDict2 = new Dictionary("English", "Dutch");
 			try {

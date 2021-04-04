@@ -47,16 +47,23 @@ public class Integration{
         WebEngine webEngine = webviewtest.getEngine();
         for(int i=0; i<translation.size();i++) {
             String translatedWord;
-            if (translation.get(i).getValue().size() == 0) {
-                //TODO Open the add translation dialog
-                translatedWord = "- ";
+            String[] otherTranslations;
+            if (translation.get(i).getValue() != null) {
+                if (translation.get(i).getValue().size() == 0) {
+                    //TODO Open the add translation dialog
+                    translatedWord = "- ";
+                } else {
+                    translatedWord = translation.get(i).getValue().get(0).getKey();
+                }
+                otherTranslations = new String[translation.get(i).getValue().size()];
+                for (int j = 0; j < otherTranslations.length; j++) {
+                    otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
+                }
             } else {
-                translatedWord = translation.get(i).getValue().get(0).getKey();
+                translatedWord = translation.get(i).getKey();
+                otherTranslations = new String[0];
             }
-            String[] otherTranslations = new String[translation.get(i).getValue().size()];
-            for (int j = 0; j < otherTranslations.length; j++) {
-                otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
-            }
+
             webEngine.executeScript("addTranslation("+i+",\""+translatedWord+"\","+Arrays.deepToString(otherTranslations)+")");
         }
     }

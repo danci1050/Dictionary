@@ -77,8 +77,8 @@ public class Dictionary {
 				explanation = explanations[idx];
 			}
 
-			entry.addTranslation(translations[idx].strip().replaceAll("[\\s]+", " "),
-					explanation.strip().replaceAll("[\\s]+", " "));
+			entry.addTranslation(translations[idx].replaceAll("[\\s,]+", " ").strip(),
+					explanation.replaceAll("[\\s,]+", " ").strip());
 		}
 	}
 
@@ -119,13 +119,13 @@ public class Dictionary {
 			if (splitLine.length == 3) {
 				add(splitLine[0], splitLine[1].split(CSVSecondaryDelimiter), splitLine[2].split(CSVSecondaryDelimiter));
 			} else {
-//				System.out.println(splitLine.length);
-//				System.out.println(String.join("    ", splitLine));
 				errorCount++;
 			}
 		}
-		
-		System.err.println("Number of Errors while parsing CSV: " + errorCount);
+
+		if (errorCount > 0) {
+			System.err.println("Number of Errors while parsing CSV: " + errorCount);
+		}
 		fr.close();
 	}
 

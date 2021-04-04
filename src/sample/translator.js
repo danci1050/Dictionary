@@ -38,9 +38,7 @@ window.onclick = function (event) {
 }
 
 
-
 function addTranslation(iteration, translation, alternativeTranslations) {
-
   if(!document.getElementById("outputField").classList.contains("addBackgroundColorToOutput")){
   document.getElementById("outputField").classList.add("addBackgroundColorToOutput");
   document.getElementById("copy").classList.add("show");
@@ -59,7 +57,15 @@ function addTranslation(iteration, translation, alternativeTranslations) {
   span.id = iteration;
   div.id = iteration + "d";
   for (i = 0; i < alternativeTranslations.length; i++) {
-    var alttrans = document.createElement("div")
+    var alttrans = document.createElement("div");
+    alttrans.addEventListener('click', function(event){
+      var inter=event.target.innerHTML;
+      var altid=alttrans.id;
+      event.target.innerHTML=document.getElementById(event.target.id.split("d")[0]).innerHTML;
+      document.getElementById(event.target.id.split("d")[0]).innerHTML=inter;
+      console.log(document.getElementById(event.target.id.split("d")[0]).innerHTML);
+      
+    })
     alttrans.classList.add("inlineblockDiv");
     alttrans.innerHTML = alternativeTranslations[i];
     alttrans.id = iteration + "d" + i;
@@ -69,16 +75,48 @@ function addTranslation(iteration, translation, alternativeTranslations) {
     }
     div.appendChild(alttrans);
 
-    
-
   parent.appendChild(span);
   parent.appendChild(div);
   translationField.appendChild(parent);
-
   span.addEventListener("click", function () { showDropdown(this); });
 }
 }
 
+function addUntanslated(iteration, translation ,showAddword) {
+  if(!document.getElementById("outputField").classList.contains("addBackgroundColorToOutput")){
+  document.getElementById("outputField").classList.add("addBackgroundColorToOutput");
+  document.getElementById("copy").classList.add("show");
+  document.getElementById("save").classList.add("show");
+  }
+  var parent = document.createElement("div");
+  var span = document.createElement("span");
+  var div = document.createElement("div");
+  translationField = document.getElementById("outputField");
+
+  span.innerHTML = translation;
+
+  span.classList.add("dropbtn");
+  div.classList.add("dropdown-content");
+  parent.classList.add("inlineDiv");
+  span.id = iteration;
+  div.id = iteration + "d";
+    var alttrans = document.createElement("div");
+    var addIcon = document.createElement("span");
+    addIcon.classList.add("icon-plus");
+    addIcon.classList.add(" text-xl");
+    addIcon.innerHTML="Add translation";
+    alttrans.appendChild(addIcon);
+    alttrans.classList.add("inlineblockDiv");
+    alttrans.innerHTML = alternativeTranslations[i];
+    alttrans.id = iteration + "d" + i;
+    div.appendChild(alttrans);
+
+  parent.appendChild(span);
+  parent.appendChild(div);
+  translationField.appendChild(parent);
+  span.addEventListener("click", function () { showDropdown(this); });
+
+}
 
 var textarea = document.getElementById("input-textbox");
 var inputcol = document.getElementById("input-col");
@@ -133,7 +171,6 @@ function onGoogleButtonClick(evt){
     }
   }
   var Filetext = "";
-  /*TODO: finsh file upload */
   function fileupload(text, size, name){
       console.log(text);
       console.log(size);
@@ -376,15 +413,16 @@ function swap(){
     }
   }
   changeHeight();
-  //javaIntegration.translate(tab2Location,tab1Location,previousText);
+  javaIntegration.translate(tab2Location,tab1Location,previousText);
 }
 
 function fileTranslate(){
+  console.log("run");
   document.getElementById("text-button").click();
-  console.log(Filetext);
   document.getElementById("input-textbox").value=String(Filetext);
   changeHeight();
-  //javaIntegration.translate(tab2Location,tab1Location,previousText);
+  console.log(document.getElementById("input-textbox"));
+  javaIntegration.translate(tab2Location,tab1Location,document.getElementById("input-textbox").value);
   
 }
 

@@ -85,6 +85,8 @@ public class Integration{
     // not an ideal solution but I cant get the clipboard API to work on javafx webview
     // does not work on linux
     public void copy(String text){
+        text=text.replaceAll("&nbsp;"," ");
+        System.out.println("copy");
         StringSelection selection = new StringSelection(text);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);

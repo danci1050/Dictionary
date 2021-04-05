@@ -138,6 +138,7 @@ public class Integration{
         }
     }
     public void addWord(String from, String to,String word){
+        word=word.replaceAll("&nbsp;","");
         System.out.println(word);
         controller.addTranslationDialog(new ActionEvent(),t.getDictionaries().get(from+to),word);
     }

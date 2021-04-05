@@ -64,7 +64,7 @@ function addTranslation(iteration, translation, alternativeTranslations) {
     var addbutton = document.createElement("span");
     addbutton.classList.add("icon-plus")
     addbutton.classList.add("add-icon");
-    alttrans.innerHTML="&nbsp; add word";
+    alttrans.innerHTML="&nbsp; add translation";
     alttrans.appendChild(addbutton);
     alttrans.id=iteration+"d"+0;
     

@@ -61,21 +61,21 @@ public class Integration{
                 if (translation.get(i).getValue().size() == 0) {
                     // This is a case where no translation was found
                     //TODO Open the add translation dialog
-                    translatedWord = translation.get(i).getKey();
+                    translatedWord = translation.get(i).getKey().replaceAll("[\"]*", "");
                     otherTranslations = new String[] {"\"" + translation.get(i).getKey() + "\""};
                 } else {
                     // This is a case with at least one translation
-                    translatedWord = translation.get(i).getValue().get(0).getKey();
+                    translatedWord = translation.get(i).getValue().get(0).getKey().replaceAll("[\"]*", "");
                     otherTranslations = new String[translation.get(i).getValue().size()];
                     for (int j = 0; j < otherTranslations.length; j++) {
                         otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey()
-                                .replaceAll("[\"\\]\\[<>{}()]", "") + " \"";
+                                .replaceAll("[\"\\]\\[<>{}()]*", "") + " \"";
                     }
                 }
             } else {
                 // This is a case where the key is a punctuation
-                translatedWord = translation.get(i).getKey();
-                otherTranslations = new String[] {"\"" + translation.get(i).getKey() + "\""};
+                translatedWord = translation.get(i).getKey().replaceAll("[\"]*", "");
+                otherTranslations = new String[] {"\"" + translation.get(i).getKey().replaceAll("[\"]*", "") + "\""};
             }
 
             System.err.println("addTranslation("+i+",\""+translatedWord+"\","+Arrays.deepToString(otherTranslations)+")");

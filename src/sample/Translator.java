@@ -2,29 +2,32 @@ package sample;
 
 import javafx.util.Pair;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * Holds all Dictionaries and translates text to and from available languages
+ */
 public class Translator {
 	private Path dictionariesFolderPath;
 	private HashMap<String, Dictionary> dictionaries;
 
 	/**
-	 * Initializes the class, loading serialized Dictionaries from "dictionaries" folder.
+	 * Initializes the class, loading serialized Dictionaries from "dictionaries"
+	 * folder.
 	 */
 	public Translator() {
 		this(Path.of("dictionaries"));
 	}
 
 	/**
-	 * Initializes the class, loading serialized Dictionaries from the specified folder. No Dictionaries will be
-	 * initialized if null is passed as the argument.
+	 * Initializes the class, loading serialized Dictionaries from the specified
+	 * folder. No Dictionaries will be initialized if null is passed as the
+	 * argument.
+	 * 
 	 * @param folderPath Path to the folder with serialized Dictionaries.
 	 */
 	public Translator(Path folderPath) {
@@ -36,7 +39,8 @@ public class Translator {
 
 		File folderFile = folderPath.toFile();
 		File[] dictionaryFiles;
-		// Check for the existence of the directory - if it does not exist, try to create it. If it's not a directory
+		// Check for the existence of the directory - if it does not exist, try to
+		// create it. If it's not a directory
 		// print an error
 		if (folderFile.exists()) {
 			if (folderFile.isDirectory()) {
@@ -48,13 +52,13 @@ public class Translator {
 				return;
 			}
 		} else {
-			 if (folderFile.mkdirs()) {
-			 	dictionariesFolderPath = folderPath;
-				 dictionaryFiles = new File[0];
-			 } else {
-			 	dictionariesFolderPath = null;
-			 	return;
-			 }
+			if (folderFile.mkdirs()) {
+				dictionariesFolderPath = folderPath;
+				dictionaryFiles = new File[0];
+			} else {
+				dictionariesFolderPath = null;
+				return;
+			}
 		}
 		if (dictionaryFiles != null && dictionaryFiles.length > 0) {
 			for (File file : dictionaryFiles) {
@@ -68,12 +72,13 @@ public class Translator {
 				}
 			}
 		}
-		//TODO: Remove next line block after dictionaries are serialized and uncomment block before
+		// TODO: Remove next line block after dictionaries are serialized and uncomment
+		// block before
 		if (dictionaryFiles != null && dictionaryFiles.length == 0) {
 			Dictionary dummyDict = new Dictionary("Dutch", "English");
 			Dictionary dummyDict2 = new Dictionary("English", "Dutch");
 			try {
-				dummyDict.generateDictionaryFromCSVFile(Path.of("dictionaries_csv","dutWordList_cleaned.csv"));
+				dummyDict.generateDictionaryFromCSVFile(Path.of("dictionaries_csv", "dutWordList_cleaned.csv"));
 				dummyDict2.generateDictionaryFromCSVFile(Path.of("dictionaries_csv", "engWordList_cleaned.csv"));
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -86,23 +91,25 @@ public class Translator {
 
 	/**
 	 * Adds the translations to the Dictionary.
+	 * 
 	 * @param fromLanguage The language of the original expression.
-	 * @param toLanguage The language of the translation.
-	 * @param expression The original expression.
+	 * @param toLanguage   The language of the translation.
+	 * @param expression   The original expression.
 	 * @param translations The translations of the expression.
-	 * @param explanations The explanations of the translations. This array should be the same length as the
-	 *                        translations array.
+	 * @param explanations The explanations of the translations. This array should
+	 *                     be the same length as the translations array.
 	 */
 	public void addTranslation(String fromLanguage, String toLanguage, String expression, String[] translations,
-							   String[] explanations) {
+			String[] explanations) {
 		dictionaries.get(fromLanguage + toLanguage).add(expression, translations, explanations);
 	}
 
 	/**
 	 * Removes the specified translations from the Dictionary.
+	 * 
 	 * @param fromLanguage The language of the original expression.
-	 * @param toLanguage The language of the translation.
-	 * @param expression The original expression.
+	 * @param toLanguage   The language of the translation.
+	 * @param expression   The original expression.
 	 * @param translations The translations of the expression.
 	 * @throws NoTranslationException
 	 */
@@ -113,11 +120,13 @@ public class Translator {
 
 	/**
 	 * Searches for a single word in the Dictionary.
+	 * 
 	 * @param fromLanguage The language of the original word.
-	 * @param toLanguage The language to translate to.
-	 * @param word The sought word.
+	 * @param toLanguage   The language to translate to.
+	 * @param word         The sought word.
 	 * @return An Entry from the Dictionary, corresponding to the the word.
-	 * @throws NoTranslationException Thrown if the Dictionary does not contain the translation for the word.
+	 * @throws NoTranslationException Thrown if the Dictionary does not contain the
+	 *                                translation for the word.
 	 */
 	public Entry searchAWord(String fromLanguage, String toLanguage, String word) throws NoTranslationException {
 		return dictionaries.get(fromLanguage + toLanguage).searchAWord(word);
@@ -125,6 +134,7 @@ public class Translator {
 
 	/**
 	 * Adds the specified Dictionary to the Translator's dictionaries.
+	 * 
 	 * @param dict The Dictionary to add.
 	 */
 	public void addDictionary(Dictionary dict) {
@@ -133,6 +143,7 @@ public class Translator {
 
 	/**
 	 * Returns all dictionaries the Translator has access to.
+	 * 
 	 * @return All dictionaries the Translator has access to.
 	 */
 	public HashMap<String, Dictionary> getDictionaries() {
@@ -140,8 +151,10 @@ public class Translator {
 	}
 
 	/**
-	 * Serializes all Dictionaries the Translator has access to and saves them to the folder from which the Translator
-	 * loaded the Dictionaries at initialization. Does nothing if the Translator was initialized from "null" directory.
+	 * Serializes all Dictionaries the Translator has access to and saves them to
+	 * the folder from which the Translator loaded the Dictionaries at
+	 * initialization. Does nothing if the Translator was initialized from "null"
+	 * directory.
 	 */
 	public void saveDictionaries() {
 		if (dictionariesFolderPath != null) {
@@ -153,8 +166,10 @@ public class Translator {
 
 	/**
 	 * Returns the set of pairs of languages the Dictionary can translate from/to.
-	 * @return Set of pairs of languages the Dictionary can translate from/to. The key of the pair is the source
-	 *         language and the value is the destination language.
+	 * 
+	 * @return Set of pairs of languages the Dictionary can translate from/to. The
+	 *         key of the pair is the source language and the value is the
+	 *         destination language.
 	 */
 	public Set<Pair<String, String>> getLanguages() {
 		Set<Pair<String, String>> languages = new HashSet<>();
@@ -165,29 +180,34 @@ public class Translator {
 	}
 
 	/**
-	 * Matches phrases from a particular Entry to following words of the input text array.
+	 * Matches phrases from a particular Entry to following words of the input text
+	 * array.
+	 * 
 	 * @param inputTextArray The array to match the phrases to.
-	 * @param i Index of the inputTextArray which corresponds to the position the wordEntry is located on.
-	 * @param wordEntry The Entry containing phrases to match
-	 * @return A Pair, where the Key is the matched phrase and the Value is a List of all known translations paired
-	 *         with their corresponding explanations.
+	 * @param i              Index of the inputTextArray which corresponds to the
+	 *                       position the wordEntry is located on.
+	 * @param wordEntry      The Entry containing phrases to match
+	 * @return A Pair, where the Key is the matched phrase and the Value is a List
+	 *         of all known translations paired with their corresponding
+	 *         explanations.
 	 */
-	// TODO: verify that this method is correct
 	private Pair<String, List<Pair<String, String>>> processPhrase(String[] inputTextArray, int i, Entry wordEntry) {
 		Pair<String, List<Pair<String, String>>> result;
 		Entry nextEntry;
 		String skipWhenProcessing = "[\\n]+";
 
 		if (i == inputTextArray.length - 1) {
-			return new Pair<>(wordEntry.getWord(), wordEntry.getTranslation());
+			return new Pair<>(wordEntry.getWord(), wordEntry.getTranslationsWithExplanations());
 		}
 
-		// If the next word is a character which should be skipped when processing phrases, skip it
+		// If the next word is a character which should be skipped when processing
+		// phrases, skip it
 		if (inputTextArray[i + 1].matches(skipWhenProcessing)) {
 			return processPhrase(inputTextArray, i + 1, wordEntry);
 		}
-		// If this Entry does contain a phrase with the next word of the input text array
-		if (wordEntry.getPhrase() != null && (nextEntry = wordEntry.getPhrase().get(inputTextArray[i + 1])) != null) {
+		// If this Entry does contain a phrase with the next word of the input text
+		// array
+		if ((nextEntry = wordEntry.getPhrase().get(inputTextArray[i + 1])) != null) {
 			// Call this method recursively on the phrases' Entry
 			result = processPhrase(inputTextArray, i + 1, nextEntry);
 			// If there is at least one translation of the matched phrase
@@ -196,32 +216,35 @@ public class Translator {
 				return new Pair<>(wordEntry.getWord() + " " + result.getKey(), result.getValue());
 			}
 		}
-		// If the Entry does contain a phrase with the next word of the input text array or the phrase has no
+		// If the Entry does contain a phrase with the next word of the input text array
+		// or the phrase has no
 		// translation, return the translation of the phrase that was matched so far.
-		return new Pair<>(wordEntry.getWord(), wordEntry.getTranslation());
+		return new Pair<>(wordEntry.getWord(), wordEntry.getTranslationsWithExplanations());
 	}
 
 	/**
 	 * <p>
-	 *     Translates the specified text from fromLanguage to toLanguage. A composite data structure is returned, containing
-	 * 	   the translation.
+	 * Translates the specified text from fromLanguage to toLanguage. A composite
+	 * data structure is returned, containing the translation.
 	 * </p>
 	 * <p>
-	 *     Each Pair in the returned List is representing a word or a phrase that was translated. The Key
-	 * 	   of the Pair is the word/phrase in the original language, and the Value corresponds to the translation.
+	 * Each Pair in the returned List is representing a word or a phrase that was
+	 * translated. The Key of the Pair is the word/phrase in the original language,
+	 * and the Value corresponds to the translation.
 	 * </p>
 	 * <p>
-	 *     The translation for each word/phrase is a List of Pairs, where the Key is the translation and the Value is
-	 *     the explanation. If the length of this list is zero, then there is no translation for this word in the
-	 *     dictionary. If this list is null, the word is considered to be some type of punctuation or a number, and was
-	 *     not translated.
+	 * The translation for each word/phrase is a List of Pairs, where the Key is the
+	 * translation and the Value is the explanation. If the length of this list is
+	 * zero, then there is no translation for this word in the dictionary. If this
+	 * list is null, the word is considered to be some type of punctuation or a
+	 * number, and was not translated.
 	 * </p>
+	 * 
 	 * @param fromLanguage The language of the original text.
-	 * @param toLanguage The language of the sought translation.
-	 * @param inputText The text to translate.
+	 * @param toLanguage   The language of the sought translation.
+	 * @param inputText    The text to translate.
 	 * @return The translation in the format described in the method description.
 	 */
-	// TODO: verify that this method is correct
 	public List<Pair<String, List<Pair<String, String>>>> translate(String fromLanguage, String toLanguage,
 			String inputText) {
 
@@ -231,7 +254,8 @@ public class Translator {
 			return translation;
 		}
 
-		// Regex pattern matches any Unicode punctuation, symbol, newline character or number
+		// Regex pattern matches any Unicode punctuation, symbol, newline character or
+		// number
 		String doNotTranslate = "([\\p{P}\\p{S}\\n0-9]+)";
 
 		// Separate characters/words which are not supposed to be translated by spaces
@@ -244,21 +268,25 @@ public class Translator {
 			// If the word is supposed to be translated
 			if (!word.matches(doNotTranslate)) {
 				try {
-					// If the Dictionary contains an Entry corresponding to the word, try to match all its phrases
+					// If the Dictionary contains an Entry corresponding to the word, try to match
+					// all its phrases
 					Entry wordEntry = searchAWord(fromLanguage, toLanguage, word);
 					translation.add(processPhrase(inputTextArray, i, wordEntry));
 				} catch (NoTranslationException e) {
-					// If the Dictionary does not contain a corresponding Entry, add a Pair with empty translation List
+					// If the Dictionary does not contain a corresponding Entry, add a Pair with
+					// empty translation List
 					translation.add(new Pair<>(word, new ArrayList<>(0)));
 				}
 			} else {
-				// If the word is not supposed to be translated, do not translate, instead add a Pair with null
+				// If the word is not supposed to be translated, do not translate, instead add a
+				// Pair with null
 				// translation
 				translation.add(new Pair<>(word, null));
 			}
 
 			// Move by the number of processed words
-			// A regex pattern for whitespace is not wanted here, as it would incorrectly count the newline characters
+			// A regex pattern for whitespace is not wanted here, as it would incorrectly
+			// count the newline characters
 			i += translation.get(translation.size() - 1).getKey().split(" ").length;
 		}
 
@@ -266,16 +294,21 @@ public class Translator {
 	}
 
 	/**
-	 *	Translates the specified text from fromLanguage to toLanguage. A composite data structure is returned, containing
-	 * 	the translation. For the translation format, see {@link #translate the translate() method.}. The translation
-	 * 	time is returned as the first entry of the translation list.
+	 * Translates the specified text from fromLanguage to toLanguage. A composite
+	 * data structure is returned, containing the translation. For the translation
+	 * format, see {@link #translate the translate() method.}. The translation time
+	 * is returned as the first entry of the translation list.
+	 * 
 	 * @param fromLanguage The language of the original text.
-	 * @param toLanguage The language of the sought translation.
-	 * @param inputText The text to translate.
-	 * @return A translation List, where the first Pair contains the total translation time
-	 * @see Translator#translate(java.lang.String, java.lang.String, java.lang.String)
+	 * @param toLanguage   The language of the sought translation.
+	 * @param inputText    The text to translate.
+	 * @return A translation List, where the first Pair contains the total
+	 *         translation time
+	 * @see Translator#translate(java.lang.String, java.lang.String,
+	 *      java.lang.String)
 	 */
-	public List<Pair<String, List<Pair<String, String>>>> timedTranslate(String fromLanguage, String toLanguage, String inputText) {
+	public List<Pair<String, List<Pair<String, String>>>> timedTranslate(String fromLanguage, String toLanguage,
+			String inputText) {
 		List<Pair<String, List<Pair<String, String>>>> translation;
 		long startTime = System.nanoTime();
 
@@ -289,15 +322,23 @@ public class Translator {
 	}
 
 	/**
-	 * A method which joins the translation returned by the {@link #translate translate()} or
-	 * {@link #timedTranslate timedTranslate()} method into a string. Words, which were not translated are put in
-	 * closed brackets <>. Translation time is also handled correctly.
-	 * @param translation The translation returned by translate() or timedTranslate() methods.
+	 * A method which joins the translation returned by the {@link #translate
+	 * translate()} or {@link #timedTranslate timedTranslate()} method into a
+	 * string. Words, which were not translated are put in closed brackets <>.
+	 * Translation time is also handled correctly.
+	 * 
+	 * @param translation The translation returned by translate() or
+	 *                    timedTranslate() methods.
 	 * @return
 	 */
-	//TODO: potentially implement method to save the exact translation displayed by the GUI, taking into account
-	// the translations selected by the "other translations" dialog
+	// TODO: potentially implement method to save the exact translation displayed by
+	// the GUI, taking into account the translations selected by the
+	// "other translations" dialog
 	public String getStringTranslation (List<Pair<String, List<Pair<String, String>>>> translation) {
+		if (translation.size() == 0) {
+			return "";
+		}
+
 		StringBuilder translationString = new StringBuilder();
 
 		// Process translation time
@@ -309,70 +350,43 @@ public class Translator {
 
 		// Process translation
 		for (Pair<String, List<Pair<String, String>>> pair : translation) {
-			// The translation is null -> the was not meant to be translated
-			if (pair.getValue() == null) {
-				translationString.append(pair.getKey());
-				continue;
-			}
-			// If the last character was not a newline, append space
-			if (translationString.length() >= 1 &&
-					!translationString.substring(translationString.length() - 1).matches("\\n")) {
+			// If the last character was not a newline and this is not a punctuation, append space
+			if (translationString.length() >= 1
+					&& !translationString.substring(translationString.length() - 1).matches("[\\n]")
+					&& !pair.getKey().matches("[\\s\\S]*[\\p{P}\\n][\\s\\S]*")) {
 				translationString.append(" ");
 			}
-			// If the word has no translation
-			if (pair.getValue().size() == 0) {
-				translationString.append("<").append(pair.getKey()).append(">");
+			// The translation is null -> the word was not meant to be translated
+			if (pair.getValue() == null) {
+				translationString.append(pair.getKey());
 			} else {
-				// If the word has translation
-				translationString.append(pair.getValue().get(0).getKey());
+				// If the word has no translation
+				if (pair.getValue().size() == 0) {
+					translationString.append("<").append(pair.getKey()).append(">");
+				} else {
+					// If the word has translation
+					translationString.append(pair.getValue().get(0).getKey());
+				}
 			}
 		}
 
 		return translationString.toString();
 	}
 
-	public File loadFileDialog() {
-
-		JFrame f = new JFrame();
-		JFileChooser chooser = new JFileChooser();
-		int userSelection = chooser.showOpenDialog(f);
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			return chooser.getSelectedFile();
-		}
-
-		return null;
-	}
-
-	public String readFile(File file) {
-		List<String> text = new ArrayList<>();
+	public String readFromFile(Path path) {
 		try {
-			Files.lines(Path.of(file.getPath()), StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
-			return text.stream().collect(Collectors.joining(", "));
+			return Files.readString(path);
 		} catch (IOException e) {
-			System.out.println("IO Exception");
+			e.printStackTrace();
+			return null;
 		}
-
-		return null;
 	}
 
-	public File saveFileDialog() {
-
-		JFrame f = new JFrame();
-		JFileChooser chooser = new JFileChooser();
-		chooser.setSelectedFile(new File("translation.txt"));
-		int userSelection = chooser.showSaveDialog(f);
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			return chooser.getSelectedFile();
-		}
-
-		return null;
-
-	}
-	public void saveTranslation(File file, List<Pair<String, List<Pair<String, String>>>> translation) {
+	public void saveToFile(Path path, List<Pair<String, List<Pair<String, String>>>> translation) {
 		try {
-			Files.writeString(Path.of(file.getPath()), getStringTranslation(translation));
+			Files.writeString(path, getStringTranslation(translation));
 		} catch (IOException e) {
-			System.out.println("IO Exception");
+			System.err.println("IO Exception");
 		}
 	}
 }

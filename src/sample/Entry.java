@@ -1,14 +1,25 @@
 package sample;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import javafx.util.Pair;
 
-import java.io.Serializable;
-import java.util.*;
-
+/**
+ * Stores translations and phrases of a particular word from a Dictionary
+ */
 public class Entry implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private final String word;
-	private List<Pair<String, String>> translation = new ArrayList<>();
+	private Set<String> translations = new HashSet<String>();
+	private Map<String, String> explanations = new HashMap<>();
 	private final Map<String, Entry> phrase = new HashMap<>();
 
 	public Entry(String word) {
@@ -16,12 +27,15 @@ public class Entry implements Serializable {
 	}
 
 	public Entry(String word, String translation) {
-		this(word, translation, "");
+		this.word = word;
+		this.addTranslation(translation);
 	}
 
-	public Entry(String word, List<Pair<String, String>> translation) {
+	public Entry(String word, List<Pair<String, String>> translations) {
 		this.word = word;
-		this.translation = translation;
+		for (Pair<String, String> pair : translations) {
+			this.addTranslation(pair.getKey(), pair.getValue());
+		}
 	}
 
 	public Entry(String word, String translation, String explanation) {
@@ -29,24 +43,85 @@ public class Entry implements Serializable {
 		this.addTranslation(translation, explanation);
 	}
 
+	/**
+	 * Get the word associated with this entry
+	 * 
+	 * @return the word
+	 */
 	public String getWord() {
 		return word;
 	}
 
-	public List<Pair<String, String>> getTranslation() {
-		return translation;
+	/**
+	 * Translations object getter
+	 * 
+	 * @return translations object
+	 */
+	public Set<String> getTranslations() {
+		return translations;
 	}
 
+	/**
+	 * Explanations object getter
+	 * 
+	 * @return explanations object
+	 */
+	public Map<String, String> getExplanations() {
+		return explanations;
+	}
+
+	/**
+	 * Get an explanation for a translation
+	 * 
+	 * @param translation translation to get explanation for
+	 * @return explanation
+	 */
+	public String getExplanation(String translation) {
+		return explanations.get(translation);
+	}
+
+	/**
+	 * Generates and returns a list of translations with associated explanations (or
+	 * null).
+	 * 
+	 * @return generated list of translations with explanations
+	 */
+	public List<Pair<String, String>> getTranslationsWithExplanations() {
+		List<Pair<String, String>> translationsWithExplanations = new ArrayList<>(translations.size());
+
+		for (String translation : translations) {
+			String explanation = explanations.get(translation);
+			translationsWithExplanations.add(new Pair<>(translation, explanation));
+		}
+
+		return translationsWithExplanations;
+	}
+
+	/**
+	 * Returns all translations and their explanations concatenated to a single String
+	 *
+	 * @return All translations and their explanations concatenated to a single String
+	 */
 	public String getStringTranslation() {
-		List<String> stringTranslations = new ArrayList<>(translation.size());
-		for (Pair<String, String> aTranslation : translation) {
-			String stringTranslation = aTranslation.getKey();
-			if (!aTranslation.getValue().equals("")) {
-				stringTranslation += "(" + aTranslation.getValue() + ")";
+		List<String> stringTranslations = new ArrayList<>(translations.size());
+		for (String translation : translations) {
+			// Add explanation if it is present
+			String explanation = explanations.get(translation);
+			if (explanation != null) {
+				translation += " (" + explanation + ")";
 			}
-			stringTranslations.add(stringTranslation);
+			stringTranslations.add(translation);
 		}
 		return String.join(", ", stringTranslations);
+	}
+
+	/**
+	 * Add a translation to the entry
+	 *
+	 * @param translation translation of the original word
+	 */
+	public void addTranslation(String translation) {
+		this.translations.add(translation);
 	}
 
 	/**
@@ -56,34 +131,76 @@ public class Entry implements Serializable {
 	 * @param explanation explanation/comments to the translation
 	 */
 	public void addTranslation(String translation, String explanation) {
-		this.translation.add(new Pair<String, String>(translation, explanation));
+		this.translations.add(translation);
+		this.explanations.put(translation, explanation);
 	}
 
-	public void addTranslation(String translation) {
-		this.addTranslation(translation, "");
-	}
-
+	/**
+	 * Returns the object storing phrases associated with this Entry
+	 *
+	 * @return The object storing phrases associated with this Entry
+	 */
 	public Map<String, Entry> getPhrase() {
 		return phrase;
 	}
 
-	public Collection<Entry> getAllPhrases() {
-		Collection<Entry> values = new LinkedList<>();
-		if (translation.size() != 0) {
+	/**
+	 * Returns a list of phrases associated with this Entry together with their translations and explanations.
+	 * This method does not conserve the usual structure of Entries and phrases of the Dictionary.
+	 * Not to be used by Translator - only to display information about a single entry from a Dictionary.
+	 *
+	 * @return A list of phrases associated with this Entry together with their translations and explanations.
+	 */
+	public List<Entry> getAllPhrases() {
+		List<Entry> values = new ArrayList<>();
+		if (translations.size() != 0) {
 			values.add(this);
 		}
+
 		if (phrase.size() != 0) {
 			for (Entry phrase : phrase.values()) {
 				for (Entry phraseValue : phrase.getAllPhrases()) {
-					values.add(new Entry(word + " " + phraseValue.getWord(), phraseValue.getTranslation()));
+					values.add(new Entry(word + " " + phraseValue.getWord(),
+							phraseValue.getTranslationsWithExplanations()));
 				}
 			}
 		}
+
 		return values;
+	}
+
+	/**
+	 * Removes a translation and it's explanation (if present) from the entry.
+	 * 
+	 * @param translation translation to remove
+	 */
+	public void removeTranslation(String translation) {
+		this.translations.remove(translation);
+		this.explanations.remove(translation);
+	}
+
+	/**
+	 * Remove an explanation associated with translation
+	 * 
+	 * @param translation translation to remove explanation for
+	 */
+	public void removeExplanation(String translation) {
+		this.explanations.remove(translation);
+	}
+
+	/**
+	 * Set or replace explanation associated with translation
+	 * 
+	 * @param translation translation to set explanation for
+	 * @param explanation explanation to set
+	 */
+	public void setExplanation(String translation, String explanation) {
+		this.explanations.put(translation, explanation);
 	}
 
 	@Override
 	public String toString() {
-		return "Entry{word=" + word + ", translation=" + translation + ", phrase=" + phrase + '}';
+		return "Entry{\n\tword=" + getWord() + ",\n\ttranslations=" + getTranslations() + ",\n\texplanations="
+				+ getExplanations() + ",\n\tphrase=" + getPhrase() + "\n}";
 	}
 }

@@ -22,7 +22,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 
-// temporary class needs to be merged with controller
+// TODO: temporary class needs to be merged with controller - necessary to avoid deserialization of dictionaries at
+// each translation
+
 public class Integration{
 
     private static WebView webviewtest;
@@ -67,7 +69,7 @@ public class Integration{
                     translatedWord = translation.get(i).getValue().get(0).getKey();
                     otherTranslations = new String[translation.get(i).getValue().size()];
                     for (int j = 0; j < otherTranslations.length; j++) {
-                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
+                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey().replaceAll("\"", "") + " \"";
                     }
                 }
             } else {

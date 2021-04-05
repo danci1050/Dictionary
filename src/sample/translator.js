@@ -39,6 +39,8 @@ window.onclick = function (event) {
 
 
 function addTranslation(iteration, translation, alternativeTranslations) {
+  translation=translation.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  alternativeTranslations.forEach(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
   if(!document.getElementById("outputField").classList.contains("addBackgroundColorToOutput")){
   document.getElementById("outputField").classList.add("addBackgroundColorToOutput");
   document.getElementById("copy").classList.add("show");
@@ -73,7 +75,7 @@ function addTranslation(iteration, translation, alternativeTranslations) {
         var word = document.getElementById(event.target.parentElement.id.split("d")[0]).innerHTML;
       }
     javaIntegration.addWord(tab1Location,tab2Location,word);
-    javaIntegration.translate(tab1Location,tab2Location,previousText,word);
+    javaIntegration.translate(tab1Location,tab2Location,previousText);
     });
   
     alttrans.style.border = "none";
@@ -86,9 +88,6 @@ function addTranslation(iteration, translation, alternativeTranslations) {
     if(javaIntegration.getAddAWord()){
     span.addEventListener("click", function () { showDropdown(this); });
     }
-
-    
-    
 
   }else{
   for (i = 0; i < alternativeTranslations.length; i++) {
@@ -406,3 +405,4 @@ function fileTranslate(){
 function download(){
   javaIntegration.download(getText());
 }
+

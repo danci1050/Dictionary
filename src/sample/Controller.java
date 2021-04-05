@@ -19,7 +19,6 @@ import netscape.javascript.JSObject;
 
 import java.net.URISyntaxException;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 //TODO: Add comments to methods
 /**
@@ -61,7 +60,7 @@ public class Controller {
 	 * The instance of Translator the program uses
 	 */
 	private final Translator translator = new Translator();
-	private static Integration javaSettingsIntegration = new Integration();
+	private final Integration javaSettingsIntegration = new Integration(translator);
 
 	public Translator getTranslator() {
 		return translator;
@@ -117,7 +116,7 @@ public class Controller {
 			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
 				if (t1 == Worker.State.SUCCEEDED) {
 					JSObject window = (JSObject) webEngine.executeScript("window");
-					window.setMember("javaIntegration", new Integration());
+					window.setMember("javaIntegration", javaSettingsIntegration);
 
 				}
 			}

@@ -18,7 +18,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,12 +36,12 @@ public class Integration{
         Integration.webviewtest = webviewtest;
     }
 
-    private Translator t;
+    private final Translator t;
 
     private Controller controller;
 
-    public Integration(){
-        t=new Translator();
+    public Integration(Translator translator){
+        t=translator;
         controller=new Controller();
     }
     public void translate(String fromLanguage, String toLanguage, String inputText){
@@ -69,7 +68,8 @@ public class Integration{
                     translatedWord = translation.get(i).getValue().get(0).getKey();
                     otherTranslations = new String[translation.get(i).getValue().size()];
                     for (int j = 0; j < otherTranslations.length; j++) {
-                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey().replaceAll("\"", "") + " \"";
+                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey()
+                                .replaceAll("[\"\\]\\[<>{}()]", "") + " \"";
                     }
                 }
             } else {

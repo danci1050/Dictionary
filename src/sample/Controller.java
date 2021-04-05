@@ -62,6 +62,10 @@ public class Controller {
 	private final Translator translator = new Translator();
 	private static Integration javaSettingsIntegration = new Integration();
 
+	public Translator getTranslator() {
+		return translator;
+	}
+
 	public void setWebviewtest(WebView webviewtest) {
 		this.webviewtest = webviewtest;
 	}

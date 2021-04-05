@@ -6,8 +6,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 
@@ -30,6 +32,7 @@ public class Main extends Application {
 		Parent root = loader.load();
 		controller = loader.getController();
 		primaryStage.setTitle("Dictionary");
+		primaryStage.setOnCloseRequest((WindowEvent ignored) -> controller.getTranslator().saveDictionaries());
 		primaryStage.setScene(new Scene(root, 1280, 720));
 		primaryStage.sizeToScene();
 		primaryStage.show();

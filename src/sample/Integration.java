@@ -40,9 +40,9 @@ public class Integration{
 
     private Controller controller;
 
-    public Integration(Translator translator){
-        t=translator;
-        controller=new Controller();
+    public Integration(Controller controller){
+        t= controller.getTranslator();
+        this.controller=controller;
     }
     public void translate(String fromLanguage, String toLanguage, String inputText){
         List<Pair<String, List<Pair<String, String>>>> translation = t.translate(fromLanguage,toLanguage,inputText);

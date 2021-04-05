@@ -60,7 +60,7 @@ public class Controller {
 	 * The instance of Translator the program uses
 	 */
 	private final Translator translator = new Translator();
-	private final Integration javaSettingsIntegration = new Integration(translator);
+	private final Integration javaSettingsIntegration = new Integration(this);
 
 	public Translator getTranslator() {
 		return translator;

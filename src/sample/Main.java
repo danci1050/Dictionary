@@ -28,6 +28,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		pStage=primaryStage;
+		Controller.setAddNewWord(true);
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
 		Parent root = loader.load();
 		controller = loader.getController();

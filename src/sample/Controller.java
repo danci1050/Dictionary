@@ -19,6 +19,7 @@ import netscape.javascript.JSObject;
 
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 //TODO: Add comments to methods
 /**
@@ -160,7 +161,7 @@ public class Controller {
 					Optional<Pair<String, String[]>> result = addTranslationDialog(actionEvent, dictionary);
 					if (result.isPresent()) {
 						try {
-							dictionaryTable.getItems().add(dictionary.searchAWord(result.get().getKey()));
+							dictionaryTable.getItems().add(dictionary.searchAPhrase(result.get().getKey()));
 						} catch (NoTranslationException e) {
 							e.printStackTrace();
 							System.exit(1);
@@ -169,9 +170,27 @@ public class Controller {
 					}
 				}
 		);
+
+		// Setup the Remove translation button
+		Button removeButton = new Button("Remove Translation");
+		removeButton.setOnAction(
+				(ActionEvent actionEvent) -> {
+					Dictionary dictionary = languagesChoiceBox.getValue();
+					Optional<Pair<String, String[]>> result = removeTranslationDialog(actionEvent, dictionary);
+					if (result.isPresent()) {
+						dictionaryTable.getItems().removeIf(entry -> entry.getWord().equals(result.get().getKey()));
+						try {
+							dictionaryTable.getItems().add(dictionary.searchAPhrase(result.get().getKey()));
+						} catch (NoTranslationException ignored) {}
+						dictionaryTable.sort();
+					}
+				}
+		);
+
+		// Add the buttons to the top pane
 		HBox spacer = new HBox();
-		spacer.setPrefWidth(550);
-		selectionPane.getChildren().addAll(spacer, addButton);
+		spacer.setPrefWidth(400);
+		selectionPane.getChildren().addAll(spacer, addButton, removeButton);
 
 		// Setup the table columns
 		original = new TableColumn<>("Original");
@@ -284,7 +303,86 @@ public class Controller {
 		// Show dialog and add the result into dictionary
 		Optional<Pair<String, String[]>> result = dialog.showAndWait();
 		if (result.isPresent()) {
-			dictionary.add(result.get().getKey(), result.get().getValue(), new String[result.get().getValue().length]);
+			dictionary.add(result.get().getKey(), result.get().getValue(), new String[0]);
+		}
+		// Show errors if text fields were empty
+		else if (originalField.getText().isEmpty()) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setContentText("The original word cannot be empty");
+			alert.showAndWait();
+		} else if (translationField.getText().isEmpty()) {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.setContentText("The translation cannot be empty");
+			alert.showAndWait();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Opens a dialog window to remove a translation to a word
+	 *
+	 * @param actionEvent an action event
+	 * @param dictionary The Dictionary to remove the translation from
+	 * @return The result of the dialog
+	 */
+	public Optional<Pair<String, String[]>> removeTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
+		return this.removeTranslationDialog(actionEvent, dictionary, "Enter the original word or phrase");
+	}
+
+	/**
+	 * Opens a dialog window to remove a translation to a word and initializes the word textfield to a specific word
+	 *
+	 * @param actionEvent an action event
+	 * @param dictionary The Dictionary to remove the translation from
+	 * @param original The word to initialize the text field to
+	 * @return The result of the dialog
+	 */
+	public Optional<Pair<String, String[]>> removeTranslationDialog(ActionEvent actionEvent, Dictionary dictionary, String original) {
+		Dialog<Pair<String, String[]>> dialog = new Dialog<>();
+		dialog.setTitle("Remove a Translation");
+
+		if (dictionary == null) {
+			dialog.setContentText("Please select dictionary first");
+			dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+			dialog.show();
+			return Optional.empty();
+		}
+
+		// Setup the text elements
+		Label originalLabel	= new Label(dictionary.getFromLanguage());
+		TextField originalField = new TextField(original);
+		Label translationLabel = new Label(dictionary.getToLanguage());
+		TextArea translationField = new TextArea("Enter the translation to remove");
+
+		// Setup dialog pane
+		GridPane dialogPane = new GridPane();
+		dialogPane.setHgap(20);
+		dialogPane.setVgap(20);
+		dialogPane.addRow(0, originalLabel, originalField);
+		dialogPane.addRow(1, translationLabel, translationField);
+		dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL, ButtonType.FINISH);
+		dialog.getDialogPane().setContent(dialogPane);
+		dialog.setHeaderText("You can separate translations by semicolon");
+
+		// Setup dialog result converter
+		dialog.setResultConverter(buttonType -> {
+			if (buttonType == ButtonType.FINISH && !originalField.getText().isEmpty() && !translationField.getText().isEmpty()) {
+				return new Pair<>(originalField.getText(), translationField.getText().split(";"));
+			}
+			return null;
+		});
+
+		// Show dialog and remove the result from the dictionary
+		Optional<Pair<String, String[]>> result = dialog.showAndWait();
+		if (result.isPresent()) {
+			try {
+				dictionary.remove(result.get().getKey(), result.get().getValue());
+			} catch (NoTranslationException e) {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setContentText("One of the translations is not in the dictionary");
+				alert.showAndWait();
+			}
 		}
 		// Show errors if text fields were empty
 		else if (originalField.getText().isEmpty()) {

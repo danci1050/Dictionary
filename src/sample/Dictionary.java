@@ -2,10 +2,7 @@ package sample;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Stores words from a source language and their translations to the destination language
@@ -205,6 +202,31 @@ public class Dictionary {
 		} else {
 			return entry;
 		}
+	}
+
+	/**
+	 * Returns an Entry whose word field is the original phrase, and translations and explanations taken from
+	 * the dictionary.
+	 * This method does not conserve the usual structure of Entries and phrases of the Dictionary.
+	 * Not to be used by Translator - only to display information about a single phrase from a Dictionary.
+	 *
+	 * @return An Entry whose word field is the original phrase, and translations and explanations taken from
+	 * the dictionary.
+	 */
+	public Entry searchAPhrase(String original) throws NoTranslationException {
+		original = original.strip().toLowerCase();
+		String[] originalWords = original.split("[\\s]+");
+
+		Entry entry = searchAWord(originalWords[0]);
+		for (int i = 1; i < originalWords.length; i++) {
+			if (entry.getPhrase().get(originalWords[i]) != null) {
+				entry = entry.getPhrase().get(originalWords[i]);
+			} else {
+				throw new NoTranslationException();
+			}
+		}
+
+		return new Entry(original, entry.getTranslationsWithExplanations());
 	}
 
 	public void setDict(Map<String, Entry> dict) {

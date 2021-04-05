@@ -51,7 +51,7 @@ function addTranslation(iteration, translation, alternativeTranslations) {
   var div = document.createElement("div");
   translationField = document.getElementById("outputField");
 
-  span.innerHTML = translation;
+  span.innerHTML = translation+"&nbsp;";
 
   span.classList.add("dropbtn");
   div.classList.add("dropdown-content");

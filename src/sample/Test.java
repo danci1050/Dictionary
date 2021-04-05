@@ -47,6 +47,14 @@ public class Test {
 				new String[] { "B Explanation words" });
 		System.out.println(dictionary.getDictValues());
 
+		// Checking if a word exists
+		try {
+			dictionary.searchAWord("Btest");
+			System.err.println("The word is in the dictionary");
+		} catch (NoTranslationException e) {
+			System.out.println(e.getMessage());
+		}
+
 		// Removing a phrase translation
 		try {
 			dictionary.remove("A Multi word test here", new String[] { "BSingleWord" });
@@ -137,35 +145,66 @@ public class Test {
 		}
 
 		// Search with an input of a single English phrase
+		System.out.println("\nThe translation of \"dog\":");
 		System.out.println(translator.translate("English", "Dutch", "dog eared book"));
+		System.out.println("=========");
 
 		// Translation with an input of a line of String in English divided by white space (only words no phrases)
-		List<Pair<String, List<Pair<String, String>>>> translation = translator.translate("English", "Dutch",
-				"Traffic is set to resume in both directions through the canal at 20:00 local time (18:00 GMT), officials say.");
+		String text = "Traffic is set to resume in both directions through the canal at 20:00 local time (18:00 GMT), officials say.";
+		System.out.println("\nTranslating: " + text);
+		List<Pair<String, List<Pair<String, String>>>> translation = translator.translate("English", "Dutch",  text);
 		System.out.println(translation);
 		System.out.println(translator.getStringTranslation(translation));
+		System.out.println("========");
 
 		// Translation with an input of a line of String in English (phrases included)
-		translation = translator.translate("English", "Dutch",
-				"Everytime I go to the local library, I get a dog eared book.");
+		text = "Everytime I go to the local library, I get a dog eared book.";
+		System.out.println("\nTranslating: " + text);
+		translation = translator.translate("English", "Dutch",  text);
 		System.out.println(translation);
 		System.out.println(translator.getStringTranslation(translation));
+		System.out.println("========");
 
 		// Handling inputs with numbers and characters included
-		translation = translator.translate("English", "Dutch",
-				"Tug boats honked their horns in celebration as the 400m-long (1,300ft) Ever Given was dislodged on Monday.");
+		text = "Tug boats honked their horns in celebration as the 400m-long (1,300ft) Ever Given was dislodged on Monday.";
+		System.out.println("\nTranslating: " + text);
+		translation = translator.translate("English", "Dutch",  text);
 		System.out.println(translation);
 		System.out.println(translator.getStringTranslation(translation));
+		System.out.println("========");
 
 		// Input empty String
-		translation = translator.translate("English", "Dutch",
-				"");
+		text = "";
+		System.out.println("\nTranslating: " + text);
+		translation = translator.translate("English", "Dutch",  text);
 		System.out.println(translation);
 		System.out.println(translator.getStringTranslation(translation));
+		System.out.println("========");
+
+		// Translate from file
+		Path path = Path.of("test", "EnglishNewsArticle.txt");
+		System.out.println("\nTranslating: file from " + path.toAbsolutePath());
+		translation = translator.translate("English", "Dutch", translator.readFile(path));
+		System.out.println(translation);
+		System.out.println(translator.getStringTranslation(translation));
+		System.out.println("========");
+
+		// Translate a large file and record time
+		path = Path.of("test", "englishLong.txt");
+		System.out.println("\nTranslating: file from " + path.toAbsolutePath());
+		translation = translator.timedTranslate("English", "Dutch", translator.readFile(path));
+		System.out.println(translation);
+		System.out.println(translator.getStringTranslation(translation));
+		System.out.println("========");
+
+		// Save translation
+		path = Path.of("test", "englishLongTranslated.txt");
+		System.out.println("Saving the translation to " + path);
+		translator.saveTranslation(path, translation);
 
 		System.exit(10);
 		// Test translating text
-		String text = null;
+		text = null;
 		try {
 			text = Files.readString(Path.of("test/dutchSmall.txt"));
 		} catch (IOException e) {
@@ -193,7 +232,7 @@ public class Test {
 
 		// Test translating a news article with the big dictionary
 		translation = translator.timedTranslate("Dutch", "English",
-				translator.readFile(Path.of("test", "dutNewsArticle.txt").toFile()));
+				translator.readFile(Path.of("test", "dutNewsArticle.txt")));
 		System.out.println(translator.getStringTranslation(translation));
 		System.out.println(Arrays.deepToString(translation.toArray()));
 	}

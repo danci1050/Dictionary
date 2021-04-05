@@ -388,16 +388,15 @@ public class Translator {
 		return null;
 	}
 
-	public String readFile(File file) {
-		List<String> text = new ArrayList<>();
+	public String readFile(Path path) {
+		String text = null;
 		try {
-			Files.lines(Path.of(file.getPath()), StandardCharsets.ISO_8859_1).forEachOrdered(text::add);
-			return text.stream().collect(Collectors.joining(", "));
+			text = Files.readString(path);
+			return text;
 		} catch (IOException e) {
-			System.out.println("IO Exception");
+			e.printStackTrace();
+			return null;
 		}
-
-		return null;
 	}
 
 	// TODO: move UI related method to another class
@@ -415,11 +414,11 @@ public class Translator {
 
 	}
 
-	public void saveTranslation(File file, List<Pair<String, List<Pair<String, String>>>> translation) {
+	public void saveTranslation(Path path, List<Pair<String, List<Pair<String, String>>>> translation) {
 		try {
-			Files.writeString(Path.of(file.getPath()), getStringTranslation(translation));
+			Files.writeString(path, getStringTranslation(translation));
 		} catch (IOException e) {
-			System.out.println("IO Exception");
+			System.err.println("IO Exception");
 		}
 	}
 }

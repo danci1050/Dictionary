@@ -427,5 +427,5 @@ function fileTranslate(){
 }
 
 function download(){
-  javaIntegration.download(getText);
+  javaIntegration.download(getText());
 }

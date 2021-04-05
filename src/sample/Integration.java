@@ -64,7 +64,7 @@ public class Integration{
                     translatedWord = translation.get(i).getValue().get(0).getKey();
                     otherTranslations = new String[translation.get(i).getValue().size()];
                     for (int j = 0; j < otherTranslations.length; j++) {
-                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey() + " \"";
+                        otherTranslations[j] = "\"" + translation.get(i).getValue().get(j).getKey().replaceAll("\"", "") + " \"";
                     }
                 }
             } else {

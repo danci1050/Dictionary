@@ -20,6 +20,10 @@ import netscape.javascript.JSObject;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+//TODO: Add comments to methods
+/**
+ * Controls the GUI
+ */
 public class Controller {
 
 	private static boolean addNewWord;
@@ -52,6 +56,9 @@ public class Controller {
 	@FXML
 	private WebView settingsWebview;
 
+	/**
+	 * The instance of Translator the program uses
+	 */
 	private final Translator translator = new Translator();
 	private static Integration javaSettingsIntegration = new Integration();
 
@@ -76,6 +83,11 @@ public class Controller {
 		translatorPane(new ActionEvent());
 	}
 
+	/**
+	 * Set's up and displays the Pane which shows the entire Dictionary
+	 *
+	 * @param translatorPane An action event
+	 */
 	@FXML
 	public void translatorPane(ActionEvent translatorPane){
 		translatorTab.setVisible(true);
@@ -107,6 +119,11 @@ public class Controller {
 		});
 	}
 
+	/**
+	 * Set's up and displays the Pane which shows the entire Dictionary
+	 *
+	 * @param viewDictionaryPane An action event
+	 */
 	@FXML
 	public void viewDictionaryPane(ActionEvent viewDictionaryPane){
 		translatorTab.setVisible(false);
@@ -174,6 +191,11 @@ public class Controller {
 		viewDictionaryTab.setCenter(dictionaryTable);
 	}
 
+	/**
+	 * Set's up and displays the Pane which shows the setting
+	 *
+	 * @param settingsPane An action event
+	 */
 	@FXML
 	public void settingsPane(ActionEvent settingsPane){
 		WebEngine webEngine = settingsWebview.getEngine();
@@ -201,10 +223,25 @@ public class Controller {
 		settingsTab.setVisible(true);
 	}
 
+	/**
+	 * Opens a dialog window to add a translation to a word
+	 *
+	 * @param actionEvent an action event
+	 * @param dictionary The Dictionary to add the translation to
+	 * @return The result of the dialog
+	 */
 	public Optional<Pair<String, String[]>> addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
 		return this.addTranslationDialog(actionEvent, dictionary, "Enter the original word or phrase");
 	}
 
+	/**
+	 * Opens a dialog window to add a translation to a word and initializes the word textfield to a specific word
+	 *
+	 * @param actionEvent an action event
+	 * @param dictionary The Dictionary to add the translation to
+	 * @param original The word to initialize the text field to
+	 * @return The result of the dialog
+	 */
 	public Optional<Pair<String, String[]>> addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary, String original) {
 		Dialog<Pair<String, String[]>> dialog = new Dialog<>();
 		dialog.setTitle("Add a Translation");

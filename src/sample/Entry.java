@@ -1,5 +1,6 @@
 package sample;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +11,11 @@ import java.util.Set;
 
 import javafx.util.Pair;
 
+/**
+ * Stores translations and phrases of a particular word from a Dictionary
+ */
 public class Entry implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private final String word;
 	private Set<String> translations = new HashSet<String>();
@@ -92,7 +97,11 @@ public class Entry implements Serializable {
 		return translationsWithExplanations;
 	}
 
-	// TODO: comment
+	/**
+	 * Returns all translations and their explanations concatenated to a single String
+	 *
+	 * @return All translations and their explanations concatenated to a single String
+	 */
 	public String getStringTranslation() {
 		List<String> stringTranslations = new ArrayList<>(translations.size());
 		for (String translation : translations) {
@@ -126,12 +135,22 @@ public class Entry implements Serializable {
 		this.explanations.put(translation, explanation);
 	}
 
-	// TODO: comment
+	/**
+	 * Returns the object storing phrases associated with this Entry
+	 *
+	 * @return The object storing phrases associated with this Entry
+	 */
 	public Map<String, Entry> getPhrase() {
 		return phrase;
 	}
 
-	// TODO: comment
+	/**
+	 * Returns a list of phrases associated with this Entry together with their translations and explanations.
+	 * This method does not conserve the usual structure of Entries and phrases of the Dictionary.
+	 * Not to be used by Translator - only to display information about a single entry from a Dictionary.
+	 *
+	 * @return A list of phrases associated with this Entry together with their translations and explanations.
+	 */
 	public List<Entry> getAllPhrases() {
 		List<Entry> values = new ArrayList<>();
 		if (translations.size() != 0) {

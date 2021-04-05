@@ -7,6 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Stores words from a source language and their translations to the destination language
+ */
 public class Dictionary {
 	private Map<String, Entry> dict;
 	private final String fromLanguage;
@@ -111,7 +114,6 @@ public class Dictionary {
 			// [Original, [Translations;...], [Explanations;...]]
 			String[] splitLine = line.split(CSVDelimiter, -1);
 			// Only add the translation if the CSV is valid (has 3 columns)
-			// TODO: display a message or throw an exception(?). Could also try to ignore
 			// the invalid line.
 			if (splitLine.length == 3) {
 				add(splitLine[0], splitLine[1].split(CSVSecondaryDelimiter), splitLine[2].split(CSVSecondaryDelimiter));

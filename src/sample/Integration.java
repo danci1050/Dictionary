@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-// temporary class needs to be merged with controller
+// TODO: temporary class needs to be merged with controller - necessary to avoid deserialization of dictionaries at
+// each translation
+
 public class Integration{
 
     private static WebView webviewtest;

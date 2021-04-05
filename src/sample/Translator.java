@@ -2,15 +2,15 @@ package sample;
 
 import javafx.util.Pair;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * Holds all Dictionaries and translates text to and from available languages
+ */
 public class Translator {
 	private Path dictionariesFolderPath;
 	private HashMap<String, Dictionary> dictionaries;
@@ -191,7 +191,6 @@ public class Translator {
 	 *         of all known translations paired with their corresponding
 	 *         explanations.
 	 */
-	// TODO: verify that this method is correct
 	private Pair<String, List<Pair<String, String>>> processPhrase(String[] inputTextArray, int i, Entry wordEntry) {
 		Pair<String, List<Pair<String, String>>> result;
 		Entry nextEntry;
@@ -246,7 +245,6 @@ public class Translator {
 	 * @param inputText    The text to translate.
 	 * @return The translation in the format described in the method description.
 	 */
-	// TODO: verify that this method is correct
 	public List<Pair<String, List<Pair<String, String>>>> translate(String fromLanguage, String toLanguage,
 			String inputText) {
 
@@ -334,8 +332,8 @@ public class Translator {
 	 * @return
 	 */
 	// TODO: potentially implement method to save the exact translation displayed by
-	// the GUI, taking into account
-	// the translations selected by the "other translations" dialog
+	// the GUI, taking into account the translations selected by the
+	// "other translations" dialog
 	public String getStringTranslation (List<Pair<String, List<Pair<String, String>>>> translation) {
 		if (translation.size() == 0) {
 			return "";
@@ -355,7 +353,7 @@ public class Translator {
 			// If the last character was not a newline and this is not a punctuation, append space
 			if (translationString.length() >= 1
 					&& !translationString.substring(translationString.length() - 1).matches("[\\n]")
-					&& !pair.getKey().matches("\\p{P}")) {
+					&& !pair.getKey().matches("[\\s\\S]*[\\p{P}\\n][\\s\\S]*")) {
 				translationString.append(" ");
 			}
 			// The translation is null -> the word was not meant to be translated
@@ -375,46 +373,16 @@ public class Translator {
 		return translationString.toString();
 	}
 
-	// TODO: move UI related method to another class
-	public File loadFileDialog() {
-
-		JFrame f = new JFrame();
-		JFileChooser chooser = new JFileChooser();
-		int userSelection = chooser.showOpenDialog(f);
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			return chooser.getSelectedFile();
-		}
-
-		return null;
-	}
-
-	public String readFile(Path path) {
-		String text = null;
+	public String readFromFile(Path path) {
 		try {
-			text = Files.readString(path);
-			return text;
+			return Files.readString(path);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	// TODO: move UI related method to another class
-	public File saveFileDialog() {
-
-		JFrame f = new JFrame();
-		JFileChooser chooser = new JFileChooser();
-		chooser.setSelectedFile(new File("translation.txt"));
-		int userSelection = chooser.showSaveDialog(f);
-		if (userSelection == JFileChooser.APPROVE_OPTION) {
-			return chooser.getSelectedFile();
-		}
-
-		return null;
-
-	}
-
-	public void saveTranslation(Path path, List<Pair<String, List<Pair<String, String>>>> translation) {
+	public void saveToFile(Path path, List<Pair<String, List<Pair<String, String>>>> translation) {
 		try {
 			Files.writeString(path, getStringTranslation(translation));
 		} catch (IOException e) {

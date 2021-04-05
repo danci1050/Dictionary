@@ -217,7 +217,7 @@ public class Controller {
 					System.out.println("js");
 					JSObject window = (JSObject) webEngine.executeScript("window");
 					window.setMember("javaSettingsIntegration", javaSettingsIntegration);
-
+					webEngine.executeScript("setSettings()");
 				}
 
 			}

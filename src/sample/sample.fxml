@@ -7,19 +7,19 @@
 
 <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="720.0" prefWidth="1296.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <left>
-      <Pane fx:id="sidebar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="menu-grad" stylesheets="@../dictionary.css" BorderPane.alignment="CENTER">
+      <Pane fx:id="sidebar" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="menu-grad" stylesheets="@dictionary.css" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="14.0" layoutY="131.0" mnemonicParsing="false" onAction="#translatorPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Translator" textFill="WHITE">
+            <Button layoutX="14.0" layoutY="131.0" mnemonicParsing="false" onAction="#translatorPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@dictionary.css" text="Translator" textFill="WHITE">
                <font>
                   <Font size="21.0" />
                </font>
             </Button>
-            <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="View Dictionary" textFill="WHITE">
+            <Button layoutX="14.0" layoutY="169.0" mnemonicParsing="false" onAction="#viewDictionaryPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@dictionary.css" text="View Dictionary" textFill="WHITE">
                <font>
                   <Font size="21.0" />
                </font>
             </Button>
-            <Button fx:id="settingsButton" layoutX="14.0" layoutY="207.0" mnemonicParsing="false" onAction="#settingsPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@../dictionary.css" text="Settings" textFill="WHITE">
+            <Button fx:id="settingsButton" layoutX="14.0" layoutY="207.0" mnemonicParsing="false" onAction="#settingsPane" prefHeight="25.0" prefWidth="186.0" styleClass="menu-button" stylesheets="@dictionary.css" text="Settings" textFill="WHITE">
                <font>
                   <Font size="21.0" />
                </font>

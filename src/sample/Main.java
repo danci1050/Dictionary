@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -28,6 +29,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		pStage=primaryStage;
+
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
 		Parent root = loader.load();
 		controller = loader.getController();

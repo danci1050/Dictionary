@@ -26,6 +26,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		pStage=primaryStage;
+		Controller.setAddNewWord(true);
 		Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 		primaryStage.setTitle("Dictionary");
 		primaryStage.setScene(new Scene(root, 1280, 720));

@@ -1,9 +1,8 @@
 const checkbox = document.getElementById('toogleA');
 window.onload = function () {
-    
-    
+   
 checkbox.addEventListener('change', (event) => {
-    console.log("changed");
+    
     if(event.currentTarget.checked){
         javaSettingsIntegration.toggleAddNewWord(true);
     }else{
@@ -12,9 +11,9 @@ checkbox.addEventListener('change', (event) => {
 })
 }
 
-/* TODO: get this to work */
 function setSettings(){
-    if(javaSettingsIntegration.getAddNewWord){
+    if(String(javaSettingsIntegration.getAddAWord())=="true"){
+        console.log(javaSettingsIntegration.getAddAWord());
         checkbox.checked=true;
     }
 }

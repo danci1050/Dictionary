@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.event.ActionEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
@@ -17,6 +18,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -33,12 +35,15 @@ public class Integration{
         Integration.webviewtest = webviewtest;
     }
 
-    public Integration(){
+    private Translator t;
 
+    private Controller controller;
+
+    public Integration(){
+        t=new Translator();
+        controller=new Controller();
     }
     public void translate(String fromLanguage, String toLanguage, String inputText){
-
-        Translator t = new Translator();
         List<Pair<String, List<Pair<String, String>>>> translation = t.translate(fromLanguage,toLanguage,inputText);
         processTranslation(translation);
 
@@ -96,8 +101,8 @@ public class Integration{
     }
 
     public void toggleAddNewWord(boolean ToggleValue){
+        System.out.println(ToggleValue);
         Controller.setAddNewWord(ToggleValue);
-        System.out.println(Controller.isAddNewWord());
     }
     public boolean getAddNewWord(){
         return Controller.isAddNewWord();
@@ -127,5 +132,12 @@ public class Integration{
             System.out.println(r[1]);
             webEngine.executeScript("fileupload(\""+r[0]+"\",\""+r[1]+"\",\""+r[2]+"\")");
         }
+    }
+    public void addWord(String from, String to,String word){
+        System.out.println(word);
+        controller.addTranslationDialog(new ActionEvent(),t.getDictionaries().get(from+to),word);
+    }
+    public boolean getAddAWord(){
+        return Controller.isAddNewWord();
     }
 }

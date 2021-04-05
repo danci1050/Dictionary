@@ -231,8 +231,7 @@ input{
 #outputField{
   margin: 0 !important;
   height: calc(100% - 47px);
-  border-radius: .5rem;
-
+  border-bottom-left-radius: .5rem;
 }
 
 .addBackgroundColorToOutput{
@@ -326,6 +325,10 @@ input{
  
 }
 
+.add-icon{
+  float:left;
+  padding-top:4px;
+}
 
 
 .google-button{

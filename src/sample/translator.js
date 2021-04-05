@@ -56,6 +56,41 @@ function addTranslation(iteration, translation, alternativeTranslations) {
   parent.classList.add("inlineDiv");
   span.id = iteration;
   div.id = iteration + "d";
+  if(translation==alternativeTranslations[0]){
+    var alttrans = document.createElement("div");
+    alttrans.classList.add("inlineblockDiv");
+    var addbutton = document.createElement("span");
+    addbutton.classList.add("icon-plus")
+    addbutton.classList.add("add-icon");
+    alttrans.innerHTML="&nbsp; add word";
+    alttrans.appendChild(addbutton);
+    alttrans.id=iteration+"d"+0;
+    
+    alttrans.addEventListener('click', function(event){
+      try{
+      var word = document.getElementById(event.target.id.split("d")[0]).innerHTML;
+      }catch{
+        var word = document.getElementById(event.target.parentElement.id.split("d")[0]).innerHTML;
+      }
+    javaIntegration.addWord(tab1Location,tab2Location,word);
+    javaIntegration.translate(tab1Location,tab2Location,previousText,word);
+    });
+  
+    alttrans.style.border = "none";
+    
+    
+    div.appendChild(alttrans);
+    parent.appendChild(span);
+    parent.appendChild(div);
+    translationField.appendChild(parent);
+    if(javaIntegration.getAddAWord()){
+    span.addEventListener("click", function () { showDropdown(this); });
+    }
+
+    
+    
+
+  }else{
   for (i = 0; i < alternativeTranslations.length; i++) {
     var alttrans = document.createElement("div");
     alttrans.addEventListener('click', function(event){
@@ -79,44 +114,10 @@ function addTranslation(iteration, translation, alternativeTranslations) {
   parent.appendChild(div);
   translationField.appendChild(parent);
   span.addEventListener("click", function () { showDropdown(this); });
+}}
 }
-}
 
-function addUntanslated(iteration, translation ,showAddword) {
-  if(!document.getElementById("outputField").classList.contains("addBackgroundColorToOutput")){
-  document.getElementById("outputField").classList.add("addBackgroundColorToOutput");
-  document.getElementById("copy").classList.add("show");
-  document.getElementById("save").classList.add("show");
-  }
-  var parent = document.createElement("div");
-  var span = document.createElement("span");
-  var div = document.createElement("div");
-  translationField = document.getElementById("outputField");
 
-  span.innerHTML = translation;
-
-  span.classList.add("dropbtn");
-  div.classList.add("dropdown-content");
-  parent.classList.add("inlineDiv");
-  span.id = iteration;
-  div.id = iteration + "d";
-    var alttrans = document.createElement("div");
-    var addIcon = document.createElement("span");
-    addIcon.classList.add("icon-plus");
-    addIcon.classList.add(" text-xl");
-    addIcon.innerHTML="Add translation";
-    alttrans.appendChild(addIcon);
-    alttrans.classList.add("inlineblockDiv");
-    alttrans.innerHTML = alternativeTranslations[i];
-    alttrans.id = iteration + "d" + i;
-    div.appendChild(alttrans);
-
-  parent.appendChild(span);
-  parent.appendChild(div);
-  translationField.appendChild(parent);
-  span.addEventListener("click", function () { showDropdown(this); });
-
-}
 
 var textarea = document.getElementById("input-textbox");
 var inputcol = document.getElementById("input-col");
@@ -338,31 +339,6 @@ function doneTyping () {
 
 var buttons = document.getElementsByClassName("google-button");
 
-/*Array.prototype.forEach.call(buttons, function (b) {
-    b.addEventListener('click', createRipple);
-
-});
-
-function removeRipple(buttonevent){
-  buttonevent.target.remove();
-}
-
-
-function createRipple (e) {
-    var circle = document.createElement('div');
-    this.appendChild(circle);
-    circle.addEventListener("animationend", removeRipple);
-    var d = Math.max(this.clientWidth, this.clientHeight);
-
-    circle.style.width = circle.style.height = d + 'px';
-
-  var rect = this.getBoundingClientRect();
-  circle.style.left = e.pageX - screenLeft - this.offsetLeft - d / 2 + "px";
-  circle.style.top = e.pageY - screenTop - this.offsetTop - d / 2 + "px";
-  circle.classList.add('ripple');
-  
-
-}*/
 
 function getText(){
   text="";
@@ -382,9 +358,10 @@ function clearTranslation(){
 }
 
 function clearTextArea(){
+  clearTranslation();
   document.getElementById("delete-button").classList.remove("show");
-  
   document.getElementById("input-textbox").value="";
+  changeHeight();
 }
 
 function copy(){

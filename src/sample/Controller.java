@@ -188,10 +188,9 @@ public class Controller {
 			@Override
 			public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State state, Worker.State t1) {
 				if(t1== Worker.State.SUCCEEDED){
-					System.out.println("js");
 					JSObject window = (JSObject) webEngine.executeScript("window");
 					window.setMember("javaSettingsIntegration", javaSettingsIntegration);
-
+					webEngine.executeScript("setSettings()");
 				}
 
 			}
@@ -201,7 +200,7 @@ public class Controller {
 		settingsTab.setVisible(true);
 	}
 
-	public Optional<Pair<String, String[]>> addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
+	public  Optional<Pair<String, String[]>> addTranslationDialog(ActionEvent actionEvent, Dictionary dictionary) {
 		return this.addTranslationDialog(actionEvent, dictionary, "Enter the original word or phrase");
 	}
 
@@ -258,4 +257,6 @@ public class Controller {
 
 		return result;
 	}
+
+
 }
